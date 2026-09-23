@@ -1,0 +1,2843 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlockCraft Math Quest V5.2.2.1 - Free Build Instruction Fix</title>
+  <style>
+    :root{
+      --panel:#eef7fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#667085;
+      --border:#d7e2e8;
+      --accent:#6ec8a0;
+      --accent-bg:#dff5eb;
+      --series-2:#68b54d;
+      --series-3:#b27c4b;
+      --series-4:#7f8c98;
+      --series-5:#d7a81e;
+      --series-6:#b8d8a8;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:linear-gradient(135deg,#e7f7ff,#effbf4,#fff9df);
+      color:var(--text);
+    }
+    button,select{font:inherit}
+    button{cursor:pointer}
+    .app{
+      max-width:1280px;
+      margin:0 auto;
+      padding:16px;
+    }
+    .stack{display:flex;flex-direction:column;gap:16px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:16px;
+      box-shadow:0 10px 28px rgba(15,23,42,.06);
+    }
+    .topbar{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .eyebrow{
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+    .title{
+      margin-top:4px;
+      font-size:24px;
+      font-weight:900;
+    }
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(68px,1fr));
+      gap:8px;
+      min-width:300px;
+    }
+    .stat{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:13px;
+      padding:9px 10px;
+      text-align:center;
+      font-size:13px;
+      font-weight:800;
+    }
+    .layout{
+      display:grid;
+      grid-template-columns:310px 1fr;
+      gap:16px;
+    }
+    .leftcol{display:flex;flex-direction:column;gap:16px}
+    .tabs,.mode-row,.tools{
+      display:flex;
+      gap:8px;
+    }
+    .btn{
+      min-height:44px;
+      border:1px solid var(--border);
+      border-radius:13px;
+      background:white;
+      padding:10px 12px;
+      font-weight:800;
+      color:var(--text);
+      transition:transform .1s ease,border-color .15s ease,background .15s ease;
+    }
+    .btn:active{transform:scale(.98)}
+    .btn.active{
+      background:var(--accent);
+      border-color:var(--accent);
+    }
+    .btn.danger{
+      background:#fff1f2;
+      border-color:#fecdd3;
+      color:#9f1239;
+    }
+    .tabs .btn,.mode-row .btn,.tools .btn{flex:1}
+    select{
+      width:100%;
+      min-height:44px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:8px 10px;
+      background:white;
+      color:var(--text);
+    }
+    .selectors{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-top:10px;
+    }
+    .question{
+      width:100%;
+      min-width:0;
+      min-height:76px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      text-align:center;
+      font-size:24px;
+      font-weight:900;
+      line-height:1.25;
+      margin:14px 0;
+      padding:4px 0;
+      overflow:hidden;
+    }
+    .answer-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+    }
+    .answer{
+      min-height:54px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:var(--panel);
+      font-size:17px;
+      font-weight:900;
+      line-height:1.2;
+      color:var(--text);
+      padding:10px 8px;
+    }
+    .feedback{
+      min-height:24px;
+      margin-top:10px;
+      text-align:center;
+      font-size:14px;
+      font-weight:800;
+    }
+    .hidden{display:none!important}
+    .reward-grid,.inventory{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+      margin-top:10px;
+    }
+    .reward,.block-pick{
+      min-height:58px;
+      border:1px solid var(--border);
+      border-radius:13px;
+      background:white;
+      font-weight:800;
+    }
+    .block-pick.active{
+      outline:3px solid var(--accent);
+      outline-offset:1px;
+    }
+    .mission{
+      margin-top:12px;
+      background:var(--panel);
+      border-radius:14px;
+      padding:12px;
+    }
+    .mission-name{
+      margin-top:3px;
+      font-weight:900;
+    }
+    .small{font-size:12px;color:var(--muted)}
+    .progress{
+      height:9px;
+      border-radius:999px;
+      overflow:hidden;
+      background:white;
+      margin-top:8px;
+    }
+    .progress > div{
+      height:100%;
+      width:0%;
+      background:var(--accent);
+      transition:width .2s ease;
+    }
+    .mode-note{
+      margin-top:12px;
+      border:1px solid var(--border);
+      background:var(--panel);
+      border-radius:13px;
+      padding:10px;
+      font-size:12px;
+      line-height:1.45;
+    }
+    .shop{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+      margin-top:10px;
+    }
+    .shop button{
+      min-height:48px;
+      border:1px solid var(--border);
+      border-radius:11px;
+      background:white;
+      font-size:12px;
+      font-weight:800;
+    }
+    .save-status{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+    }
+    .scene-wrap{
+      position:relative;
+      height:540px;
+      min-height:400px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:var(--panel);
+    }
+    #threeCanvas{
+      display:block;
+      width:100%;
+      height:100%;
+    }
+    .hud{
+      position:absolute;
+      top:10px;
+      left:10px;
+      max-width:250px;
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--border);
+      border-radius:13px;
+      padding:10px 12px;
+      font-size:12px;
+      font-weight:700;
+      pointer-events:none;
+    }
+    .flash{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      border-radius:999px;
+      background:rgba(255,255,255,.95);
+      border:1px solid var(--border);
+      padding:10px 16px;
+      font-weight:900;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .15s ease;
+    }
+    .flash.show{opacity:1}
+    .world-head{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .howto{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .howto .card{box-shadow:none}
+    .avatar-controls{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:repeat(3,52px);
+      gap:6px;
+      justify-content:center;
+    }
+    .avatar-controls button{
+      width:52px;
+      height:52px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:white;
+      font-size:20px;
+      font-weight:900;
+      color:var(--text);
+    }
+    .avatar-controls button:active{transform:scale(.96)}
+    .avatar-info{
+      margin-top:10px;
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+    .edit-tools{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+    .selected-block-box{
+      margin-top:10px;
+      min-height:42px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      border:1px dashed var(--border);
+      border-radius:12px;
+      background:#fff;
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      padding:8px;
+    }
+    .remove-btn{
+      margin-top:8px;
+      width:100%;
+      min-height:44px;
+      border:1px solid #fecdd3;
+      border-radius:12px;
+      background:#fff1f2;
+      color:#9f1239;
+      font-weight:900;
+    }
+    .remove-btn:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+    }
+    .subject-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-top:10px;
+    }
+    .template-category{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-top:10px;
+    }
+    .inventory-heading{
+      margin-top:15px;
+      padding-top:12px;
+      border-top:1px solid var(--border);
+    }
+    .flag-inventory{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:7px;
+      margin-top:9px;
+    }
+    .flag-chip{
+      min-height:48px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:white;
+      padding:7px 5px;
+      font-size:12px;
+      font-weight:900;
+      color:var(--text);
+    }
+    .flag-chip.active{
+      outline:3px solid var(--accent);
+      outline-offset:1px;
+    }
+    .color-dot{
+      display:inline-block;
+      width:13px;
+      height:13px;
+      border-radius:4px;
+      border:1px solid rgba(0,0,0,.18);
+      vertical-align:-2px;
+      margin-right:3px;
+    }
+    .special-items{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:7px;
+      margin-top:8px;
+    }
+    .special-item{
+      min-height:50px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fffbea;
+      padding:7px;
+      font-size:12px;
+      font-weight:900;
+      color:var(--text);
+    }
+    .flag-preview{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      max-width:250px;
+      margin:0 auto;
+      padding:6px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#f8fbfd;
+    }
+    .flag-preview svg{
+      display:block;
+      width:100%;
+      max-width:230px;
+      height:auto;
+      max-height:120px;
+      object-fit:contain;
+      border:1px solid rgba(15,23,42,.14);
+      border-radius:7px;
+      box-shadow:0 3px 9px rgba(15,23,42,.07);
+      background:white;
+    }
+    .flag-question-text{
+      display:block;
+      width:100%;
+      max-width:270px;
+      margin:0 auto;
+      font-size:20px;
+      line-height:1.28;
+      font-weight:900;
+      text-align:center;
+      overflow-wrap:anywhere;
+    }
+    .subject-hint{
+      margin-top:9px;
+      border-radius:12px;
+      padding:8px 10px;
+      background:var(--panel);
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+    .quiz-tools{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+      margin-top:10px;
+    }
+    .flag-label-box{
+      margin-top:10px;
+      border:1px solid var(--border);
+      background:#fffef2;
+      border-radius:12px;
+      padding:10px 12px;
+      line-height:1.45;
+    }
+    .flag-label-box strong{
+      display:block;
+      font-size:13px;
+      margin-bottom:3px;
+    }
+    @media(max-width:980px){
+      .layout{grid-template-columns:1fr}
+      .scene-wrap{height:480px}
+    }
+    @media(max-width:620px){
+      .app{padding:10px}
+      .stats{min-width:0;width:100%}
+      .scene-wrap{height:400px}
+      .howto{grid-template-columns:1fr}
+      .question{
+        font-size:20px;
+        gap:9px;
+        margin:10px 0 12px;
+      }
+      .flag-preview{
+        max-width:220px;
+        padding:5px;
+      }
+      .flag-preview svg{
+        max-width:208px;
+        max-height:108px;
+      }
+      .flag-question-text{
+        max-width:235px;
+        font-size:18px;
+        line-height:1.3;
+      }
+      .answer{
+        font-size:16px;
+        min-height:50px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app stack" id="gameRoot" tabindex="0">
+
+  <section class="card">
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">BlockCraft Math Quest · V5.2.2.1 Free Build Instruction Fix</div>
+        <div class="title">🌍 Learn → Earn → Explore → Build</div>
+      </div>
+      <div class="stats">
+        <div class="stat">⭐<br><span id="score">0</span></div>
+        <div class="stat">🪙<br><span id="coins">10</span></div>
+        <div class="stat">🔥<br><span id="streak">0</span></div>
+        <div class="stat">🏆<br>L<span id="level">1</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="leftcol">
+
+      <section class="card">
+        <div class="tabs">
+          <button id="quizTab" class="btn active" type="button">🧠 Quiz</button>
+          <button id="buildTab" class="btn" type="button">🏗 Build</button>
+        </div>
+      </section>
+
+      <section id="quizPanel" class="card">
+        <div class="eyebrow">Learning Quiz</div>
+
+        <div class="subject-row">
+          <button id="mathSubjectBtn" class="btn active" type="button">🔢 Math</button>
+          <button id="flagsSubjectBtn" class="btn" type="button">🏳️ Flags</button>
+        </div>
+
+        <div class="selectors">
+          <select id="difficulty">
+            <option value="easy">😊 Easy</option>
+            <option value="medium" selected>🧠 Medium</option>
+            <option value="hard">🚀 Hard</option>
+          </select>
+          <select id="topic">
+            <option value="mix">🎲 Campuran</option>
+            <option value="add">➕ Tambah</option>
+            <option value="sub">➖ Tolak</option>
+            <option value="mul">✖ Darab</option>
+            <option value="div">➗ Bahagi</option>
+            <option value="square">² Square</option>
+            <option value="cube">³ Cube</option>
+            <option value="time">🕒 Masa</option>
+            <option value="money">💰 Wang</option>
+          </select>
+        </div>
+
+        <div id="subjectHint" class="subject-hint">
+          Math mode: solve the problem and choose a building block reward.
+        </div>
+
+        <div id="question" class="question">Loading…</div>
+        <div id="answers" class="answer-grid"></div>
+        <div class="quiz-tools">
+          <button id="skipLearnBtn" class="btn hidden" type="button">⏭ Skip & Learn This Flag</button>
+        </div>
+        <div id="quizFeedback" class="feedback"></div>
+
+        <div id="rewardBox" class="hidden">
+          <div class="feedback">🎁 Pilih blok binaan</div>
+          <div class="reward-grid">
+            <button data-reward="grass" class="reward" type="button">🌿 Rumput</button>
+            <button data-reward="wood" class="reward" type="button">🪵 Kayu</button>
+            <button data-reward="stone" class="reward" type="button">🪨 Batu</button>
+            <button data-reward="gold" class="reward" type="button">🟨 Emas</button>
+          </div>
+        </div>
+
+        <div id="flagRewardBox" class="hidden">
+          <div class="feedback">🎨 Pilih warna flag reward</div>
+          <div class="reward-grid">
+            <button data-flag-reward="red" class="reward" type="button">🟥 Red</button>
+            <button data-flag-reward="white" class="reward" type="button">⬜ White</button>
+            <button data-flag-reward="blue" class="reward" type="button">🟦 Blue</button>
+            <button data-flag-reward="yellow" class="reward" type="button">🟨 Yellow</button>
+            <button data-flag-reward="black" class="reward" type="button">⬛ Black</button>
+            <button data-flag-reward="green" class="reward" type="button">🟩 Green</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="buildPanel" class="card hidden">
+        <div class="eyebrow">Build Mode</div>
+        <div class="mode-row" style="margin-top:10px;">
+          <button id="templateMode" class="btn active" type="button">📐 Template</button>
+          <button id="freeMode" class="btn" type="button">✨ Free Build</button>
+        </div>
+
+        <div id="templateCategoryRow" class="template-category">
+          <button id="buildingTemplateBtn" class="btn active" type="button">🏠 Buildings</button>
+          <button id="flagTemplateBtn" class="btn" type="button">🏳️ Flags</button>
+        </div>
+
+        <div class="mission">
+          <div class="eyebrow">Misi semasa</div>
+          <div id="missionName" class="mission-name">Rumah Pertama</div>
+          <div id="missionProgress" class="small" style="margin-top:4px;">0 / 0 blok</div>
+          <div class="progress"><div id="progressBar"></div></div>
+        </div>
+
+        <div id="flagLabelBox" class="flag-label-box hidden">
+          <strong>🏳️ Nama bendera</strong>
+          <div id="flagLabelText">Malaysia</div>
+        </div>
+
+        <div id="modeNote" class="mode-note">
+          <strong>Template Mode:</strong> klik ghost block. Game akan guna jenis blok yang betul secara automatik.
+        </div>
+
+        <div class="edit-tools">
+          <button id="placeToolBtn" class="btn active" type="button">🔨 Place</button>
+          <button id="removeToolBtn" class="btn" type="button">🎯 Select</button>
+        </div>
+        <div id="selectedBlockBox" class="selected-block-box">Tiada blok dipilih.</div>
+        <button id="removeSelectedBtn" class="remove-btn" type="button" disabled>🗑 Remove Selected</button>
+
+        <div class="tools" style="margin-top:12px;">
+          <button id="undoBtn" class="btn" type="button">↩ Undo</button>
+          <button id="resetBuildBtn" class="btn" type="button">🧹 Reset Build</button>
+        </div>
+
+        <div id="buildFeedback" class="feedback"></div>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">Inventory</div>
+        <div class="inventory">
+          <button data-block="grass" class="block-pick active" type="button">🌿 Rumput · <span id="grassCount">3</span></button>
+          <button data-block="wood" class="block-pick" type="button">🪵 Kayu · <span id="woodCount">3</span></button>
+          <button data-block="stone" class="block-pick" type="button">🪨 Batu · <span id="stoneCount">3</span></button>
+          <button data-block="gold" class="block-pick" type="button">🟨 Emas · <span id="goldCount">1</span></button>
+        </div>
+        <div class="small" style="margin-top:10px;">
+          Building materials boleh digunakan dalam Free Build. Template Mode memilih bahan secara automatik.
+        </div>
+
+        <div class="eyebrow inventory-heading">Flag Materials</div>
+        <div class="flag-inventory">
+          <button data-block="red" class="flag-chip" type="button"><span class="color-dot" style="background:#d62828"></span>Red · <span id="redCount">3</span></button>
+          <button data-block="white" class="flag-chip" type="button"><span class="color-dot" style="background:#ffffff"></span>White · <span id="whiteCount">3</span></button>
+          <button data-block="blue" class="flag-chip" type="button"><span class="color-dot" style="background:#1556a8"></span>Blue · <span id="blueCount">3</span></button>
+          <button data-block="yellow" class="flag-chip" type="button"><span class="color-dot" style="background:#f6c945"></span>Yellow · <span id="yellowCount">3</span></button>
+          <button data-block="black" class="flag-chip" type="button"><span class="color-dot" style="background:#222222"></span>Black · <span id="blackCount">2</span></button>
+          <button data-block="green" class="flag-chip" type="button"><span class="color-dot" style="background:#238b45"></span>Green · <span id="greenCount">2</span></button>
+        </div>
+
+        <div class="special-items">
+          <div class="special-item">☾ Crescent · <span id="crescentCount">0</span></div>
+          <div class="special-item">✹ 14-point Star · <span id="star14Count">0</span></div>
+          <div class="special-item">★ 5-point Star · <span id="star5Count">0</span></div>
+          <div class="special-item">🍁 Maple Leaf · <span id="mapleLeafCount">0</span></div>
+          <div class="special-item">✚ Cross · <span id="crossCount">0</span></div>
+        </div>
+
+        <div class="small" style="margin-top:9px;">
+          Special pieces mesti dibeli dengan syiling jika mahu menyiapkan flag yang memerlukannya.
+          Contoh: Malaysia (crescent + 14-point star), Turkey (crescent + star), Canada (maple leaf), Switzerland (cross).
+        </div>
+
+        <div class="eyebrow" style="margin-top:14px;">Building Shop</div>
+        <div class="shop">
+          <button data-buy="grass" type="button">🌿<br>3🪙</button>
+          <button data-buy="wood" type="button">🪵<br>3🪙</button>
+          <button data-buy="stone" type="button">🪨<br>4🪙</button>
+          <button data-buy="gold" type="button">🟨<br>6🪙</button>
+        </div>
+
+        <div class="eyebrow" style="margin-top:14px;">Flag Shop</div>
+        <div class="shop">
+          <button data-buy="red" type="button">🟥<br>2🪙</button>
+          <button data-buy="white" type="button">⬜<br>2🪙</button>
+          <button data-buy="blue" type="button">🟦<br>2🪙</button>
+          <button data-buy="yellow" type="button">🟨<br>2🪙</button>
+          <button data-buy="black" type="button">⬛<br>2🪙</button>
+          <button data-buy="green" type="button">🟩<br>2🪙</button>
+          <button data-buy="crescent" type="button">☾<br>8🪙</button>
+          <button data-buy="star14" type="button">✹<br>8🪙</button>
+          <button data-buy="star5" type="button">★<br>6🪙</button>
+          <button data-buy="mapleLeaf" type="button">🍁<br>8🪙</button>
+          <button data-buy="cross" type="button">✚<br>6🪙</button>
+        </div>
+        <div id="shopFeedback" class="feedback"></div>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">Scoring System</div>
+        <div class="small" style="margin-top:8px;line-height:1.65;">
+          😊 Easy = <strong>+5 markah · +1 syiling</strong><br>
+          🧠 Medium = <strong>+10 markah · +2 syiling</strong><br>
+          🚀 Hard = <strong>+20 markah · +4 syiling</strong><br><br>
+          🔥 Streak 3 = <strong>+5 bonus</strong><br>
+          🔥 Streak 5 = <strong>+10 bonus</strong><br>
+          🔥 Streak 10 = <strong>+25 bonus</strong>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">Progress Save</div>
+        <div class="small" style="margin-top:7px;line-height:1.5;">
+          Progress disimpan secara automatik pada browser ini.
+        </div>
+        <div class="tools" style="margin-top:10px;">
+          <button id="saveNowBtn" class="btn" type="button">💾 Save Now</button>
+          <button id="resetProgressBtn" class="btn danger" type="button">🗑 Reset Progress</button>
+        </div>
+        <div id="saveStatus" class="save-status">Belum disimpan.</div>
+      </section>
+    </aside>
+
+    <main class="stack">
+      <section class="card">
+        <div class="world-head">
+          <div>
+            <div class="eyebrow">3D Block World</div>
+            <div class="title" style="font-size:20px;">🏡 Explorer's Village</div>
+          </div>
+          <div id="worldHelp" class="small">Drag = rotate · Scroll = zoom · Tap ghost = build</div>
+        </div>
+
+        <div id="sceneBox" class="scene-wrap">
+          <canvas id="threeCanvas" aria-label="3D block world"></canvas>
+          <div class="hud">
+            <div>🏗 Mode: <span id="modeLabel">Template Build</span></div>
+            <div style="margin-top:4px;">🧱 Selected: <span id="selectedLabel">Rumput</span></div>
+            <div id="worldInstruction" style="margin-top:4px;">👻 Klik ghost block untuk bina.</div>
+          </div>
+          <div id="flash" class="flash">🧱 Block placed!</div>
+        </div>
+
+        <div id="threeStatus" class="small" style="margin-top:9px;">Memuatkan dunia 3D…</div>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">🧑‍🚀 Avatar Movement</div>
+        <div style="font-weight:900;margin-top:5px;">Gerakkan Explorer</div>
+        <div class="avatar-controls">
+          <span></span>
+          <button id="moveUpBtn" type="button" aria-label="Gerak ke hadapan">↑</button>
+          <span></span>
+          <button id="moveLeftBtn" type="button" aria-label="Gerak ke kiri">←</button>
+          <button id="moveDownBtn" type="button" aria-label="Gerak ke belakang">↓</button>
+          <button id="moveRightBtn" type="button" aria-label="Gerak ke kanan">→</button>
+        </div>
+        <div class="avatar-info">
+          Keyboard: <strong>W A S D</strong> atau arrow keys.<br>
+          Posisi avatar disimpan secara automatik.
+        </div>
+      </section>
+
+      <section class="howto">
+        <div class="card">
+          <div class="eyebrow">1 · Solve</div>
+          <div style="font-weight:900;margin-top:5px;">Math atau Flags</div>
+          <div class="small" style="margin-top:5px;">Selesaikan matematik atau kenal pasti bendera negara.</div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">2 · Collect</div>
+          <div style="font-weight:900;margin-top:5px;">Kumpul blok</div>
+          <div class="small" style="margin-top:5px;">Jawapan betul beri reward dan syiling.</div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">3 · Build</div>
+          <div style="font-weight:900;margin-top:5px;">Bina dunia 3D</div>
+          <div class="small" style="margin-top:5px;">Siapkan bangunan, bina bendera negara, atau bina bebas.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script type="module">
+(async()=>{
+  const root = document.getElementById('gameRoot');
+  const $ = s => root.querySelector(s);
+  const $$ = s => [...root.querySelectorAll(s)];
+
+  const STORAGE_KEY = 'blockcraft_math_quest_v4_save_1';
+
+  const labels = {
+    grass:'Rumput',
+    wood:'Kayu',
+    stone:'Batu',
+    gold:'Emas',
+    red:'Red',
+    white:'White',
+    blue:'Blue',
+    yellow:'Yellow',
+    black:'Black',
+    green:'Green',
+    crescent:'Crescent',
+    star14:'14-point Star',
+    star5:'5-point Star',
+    mapleLeaf:'Maple Leaf',
+    cross:'Cross'
+  };
+
+  const prices = {
+    grass:3,
+    wood:3,
+    stone:4,
+    gold:6,
+    red:2,
+    white:2,
+    blue:2,
+    yellow:2,
+    black:2,
+    green:2,
+    crescent:8,
+    star14:8,
+    star5:6,
+    mapleLeaf:8,
+    cross:6
+  };
+
+  const levels = [
+    {
+      name:'Rumah Pertama',
+      reward:30,
+      blocks:[
+        [0,0,0,'stone'],[1,0,0,'stone'],[2,0,0,'stone'],
+        [0,0,1,'stone'],[1,0,1,'stone'],[2,0,1,'stone'],
+        [0,0,2,'stone'],[1,0,2,'stone'],[2,0,2,'stone'],
+        [0,1,0,'wood'],[2,1,0,'wood'],
+        [0,1,1,'wood'],[2,1,1,'wood'],
+        [0,1,2,'wood'],[1,1,2,'wood'],[2,1,2,'wood'],
+        [0,2,1,'wood'],[1,2,1,'gold'],[2,2,1,'wood']
+      ]
+    },
+    {
+      name:'Pokok Besar',
+      reward:35,
+      blocks:[
+        [0,0,0,'wood'],[0,1,0,'wood'],[0,2,0,'wood'],[0,3,0,'wood'],
+        [-1,3,0,'grass'],[1,3,0,'grass'],[0,3,-1,'grass'],[0,3,1,'grass'],
+        [-1,4,0,'grass'],[1,4,0,'grass'],[0,4,-1,'grass'],[0,4,1,'grass'],
+        [0,4,0,'grass'],[0,5,0,'grass']
+      ]
+    },
+    {
+      name:'Menara Nombor',
+      reward:45,
+      blocks:[
+        [0,0,0,'stone'],[1,0,0,'stone'],[0,0,1,'stone'],[1,0,1,'stone'],
+        [0,1,0,'stone'],[1,1,0,'stone'],[0,1,1,'stone'],[1,1,1,'stone'],
+        [0,2,0,'wood'],[1,2,0,'wood'],[0,2,1,'wood'],[1,2,1,'wood'],
+        [0,3,0,'stone'],[1,3,0,'stone'],[0,3,1,'stone'],[1,3,1,'stone'],
+        [0,4,0,'gold'],[1,4,0,'gold'],[0,4,1,'gold'],[1,4,1,'gold']
+      ]
+    },
+    {
+      name:'Roket Mini',
+      reward:60,
+      blocks:[
+        [0,0,0,'gold'],
+        [0,1,0,'stone'],[0,2,0,'stone'],[0,3,0,'stone'],[0,4,0,'gold'],
+        [-1,1,0,'wood'],[1,1,0,'wood'],[0,1,-1,'wood'],[0,1,1,'wood'],
+        [-1,2,0,'stone'],[1,2,0,'stone'],[0,2,-1,'stone'],[0,2,1,'stone']
+      ]
+    }
+  ];
+
+  const flagQuizBank = [
+    {country:'Malaysia',flag:'🇲🇾',tier:'easy'},
+    {country:'Japan',flag:'🇯🇵',tier:'easy'},
+    {country:'Indonesia',flag:'🇮🇩',tier:'easy'},
+    {country:'Singapore',flag:'🇸🇬',tier:'easy'},
+    {country:'China',flag:'🇨🇳',tier:'easy'},
+    {country:'South Korea',flag:'🇰🇷',tier:'easy'},
+    {country:'United Kingdom',flag:'🇬🇧',tier:'easy'},
+    {country:'United States',flag:'🇺🇸',tier:'easy'},
+    {country:'France',flag:'🇫🇷',tier:'easy'},
+    {country:'Germany',flag:'🇩🇪',tier:'easy'},
+    {country:'Italy',flag:'🇮🇹',tier:'easy'},
+    {country:'Thailand',flag:'🇹🇭',tier:'easy'},
+
+    {country:'Canada',flag:'🇨🇦',tier:'medium'},
+    {country:'India',flag:'🇮🇳',tier:'medium'},
+    {country:'Brazil',flag:'🇧🇷',tier:'medium'},
+    {country:'Australia',flag:'🇦🇺',tier:'medium'},
+    {country:'New Zealand',flag:'🇳🇿',tier:'medium'},
+    {country:'Vietnam',flag:'🇻🇳',tier:'medium'},
+    {country:'Philippines',flag:'🇵🇭',tier:'medium'},
+    {country:'Saudi Arabia',flag:'🇸🇦',tier:'medium'},
+    {country:'Turkey',flag:'🇹🇷',tier:'medium'},
+    {country:'Switzerland',flag:'🇨🇭',tier:'medium'},
+
+    {country:'Netherlands',flag:'🇳🇱',tier:'hard'},
+    {country:'Luxembourg',flag:'🇱🇺',tier:'hard'},
+    {country:'Poland',flag:'🇵🇱',tier:'hard'},
+    {country:'Monaco',flag:'🇲🇨',tier:'hard'},
+    {country:'Austria',flag:'🇦🇹',tier:'hard'},
+    {country:'Belgium',flag:'🇧🇪',tier:'hard'},
+    {country:'Romania',flag:'🇷🇴',tier:'hard'},
+    {country:'Chad',flag:'🇹🇩',tier:'hard'},
+    {country:'Ireland',flag:'🇮🇪',tier:'hard'},
+    {country:"Côte d'Ivoire",flag:'🇨🇮',tier:'hard'}
+  ];
+
+  const malaysiaFlagComponents = (() => {
+    const parts = [];
+    const stripeHeight = 0.30;
+    for(let i=0;i<14;i++){
+      parts.push({
+        id:`stripe-${i+1}`,
+        type:(i % 2 === 1) ? 'red' : 'white',
+        shape:'rect',
+        x:0,
+        y:0.15 + (i * stripeHeight),
+        z:0,
+        w:8,
+        h:stripeHeight,
+        d:0.18
+      });
+    }
+
+    parts.push({
+      id:'canton',
+      type:'blue',
+      shape:'rect',
+      x:-2,
+      y:3.15,
+      z:0.13,
+      w:4,
+      h:2.10,
+      d:0.24
+    });
+
+    parts.push({
+      id:'crescent',
+      type:'crescent',
+      shape:'crescent',
+      x:-2.65,
+      y:3.15,
+      z:0.30,
+      scale:0.78
+    });
+
+    parts.push({
+      id:'star14',
+      type:'star14',
+      shape:'star14',
+      x:-1.25,
+      y:3.15,
+      z:0.31,
+      scale:0.70
+    });
+
+    return parts;
+  })();
+
+  const flagTemplates = [
+    {
+      name:'🇲🇾 Malaysia',
+      country:'Malaysia',
+      reward:55,
+      components:malaysiaFlagComponents
+    },
+    {
+      name:'🇯🇵 Japan',
+      country:'Japan',
+      reward:25,
+      components:[
+        {id:'white-field',type:'white',shape:'rect',x:0,y:2.5,z:0,w:7.5,h:5,d:0.20},
+        {id:'red-disc',type:'red',shape:'circle',x:0,y:2.5,z:0.22,r:1.35}
+      ]
+    },
+    {
+      name:'🇫🇷 France',
+      country:'France',
+      reward:25,
+      components:[
+        {id:'blue-panel',type:'blue',shape:'rect',x:-2.5,y:2.5,z:0,w:2.5,h:5,d:0.20},
+        {id:'white-panel',type:'white',shape:'rect',x:0,y:2.5,z:0,w:2.5,h:5,d:0.20},
+        {id:'red-panel',type:'red',shape:'rect',x:2.5,y:2.5,z:0,w:2.5,h:5,d:0.20}
+      ]
+    },
+    {
+      name:'🇩🇪 Germany',
+      country:'Germany',
+      reward:25,
+      components:[
+        {id:'black-band',type:'black',shape:'rect',x:0,y:4.166,z:0,w:7.5,h:1.666,d:0.20},
+        {id:'red-band',type:'red',shape:'rect',x:0,y:2.5,z:0,w:7.5,h:1.666,d:0.20},
+        {id:'yellow-band',type:'yellow',shape:'rect',x:0,y:0.833,z:0,w:7.5,h:1.666,d:0.20}
+      ]
+    },
+    {
+      name:'🇮🇩 Indonesia',
+      country:'Indonesia',
+      reward:20,
+      components:[
+        {id:'red-band',type:'red',shape:'rect',x:0,y:3.75,z:0,w:7.5,h:2.5,d:0.20},
+        {id:'white-band',type:'white',shape:'rect',x:0,y:1.25,z:0,w:7.5,h:2.5,d:0.20}
+      ]
+    },
+    {
+      name:'🇮🇹 Italy',
+      country:'Italy',
+      reward:25,
+      components:[
+        {id:'green-panel',type:'green',shape:'rect',x:-2.5,y:2.5,z:0,w:2.5,h:5,d:0.20},
+        {id:'white-panel',type:'white',shape:'rect',x:0,y:2.5,z:0,w:2.5,h:5,d:0.20},
+        {id:'red-panel',type:'red',shape:'rect',x:2.5,y:2.5,z:0,w:2.5,h:5,d:0.20}
+      ]
+    },
+    {
+      name:'🇨🇦 Canada',
+      country:'Canada',
+      reward:30,
+      components:[
+        {id:'canada-left',type:'red',shape:'rect',x:-2.75,y:2.5,z:0,w:2,h:5,d:0.20},
+        {id:'canada-center',type:'white',shape:'rect',x:0,y:2.5,z:0,w:3.5,h:5,d:0.20},
+        {id:'canada-right',type:'red',shape:'rect',x:2.75,y:2.5,z:0,w:2,h:5,d:0.20},
+        {id:'canada-maple',type:'mapleLeaf',shape:'mapleLeaf',x:0,y:2.55,z:0.25,scale:1.25}
+      ]
+    },
+    {
+      name:'🇨🇭 Switzerland',
+      country:'Switzerland',
+      reward:28,
+      components:[
+        {id:'swiss-field',type:'red',shape:'rect',x:0,y:2.5,z:0,w:5,h:5,d:0.20},
+        {id:'swiss-cross',type:'cross',shape:'cross',x:0,y:2.5,z:0.25,scale:1.2}
+      ]
+    },
+    {
+      name:'🇹🇷 Turkey',
+      country:'Turkey',
+      reward:30,
+      components:[
+        {id:'turkey-field',type:'red',shape:'rect',x:0,y:2.5,z:0,w:7.5,h:5,d:0.20},
+        {id:'turkey-crescent',type:'white',shape:'crescent',x:-1.15,y:2.5,z:0.28,scale:0.95},
+        {id:'turkey-star',type:'star5',shape:'star5',x:0.55,y:2.5,z:0.30,scale:0.55}
+      ]
+    }
+  ];
+
+  const state = {
+    score:0,
+    coins:10,
+    streak:0,
+    inventory:{
+      grass:3,wood:3,stone:3,gold:1,
+      red:3,white:3,blue:3,yellow:3,black:2,green:2,
+      crescent:0,star14:0,star5:0,mapleLeaf:0,cross:0,star5:0,mapleLeaf:0,cross:0
+    },
+    selectedBlock:'grass',
+    subject:'math',
+    tab:'quiz',
+    buildMode:'template',
+    templateCategory:'building',
+    level:0,
+    flagLevel:0,
+    templatePlaced:new Map(),
+    templateHistory:[],
+    flagPlaced:new Map(),
+    flagHistory:[],
+    freePlaced:new Map(),
+    freeHistory:[],
+    currentQuestion:null,
+    answeringLocked:false,
+    avatarPosition:{x:-4,z:-4},
+    cameraFollow:true,
+    editTool:'place',
+    selectedBuiltKey:null,
+    selectedBuiltScope:null
+  };
+
+  const ui = {
+    score:$('#score'),
+    coins:$('#coins'),
+    streak:$('#streak'),
+    level:$('#level'),
+    grass:$('#grassCount'),
+    wood:$('#woodCount'),
+    stone:$('#stoneCount'),
+    gold:$('#goldCount'),
+    red:$('#redCount'),
+    white:$('#whiteCount'),
+    blue:$('#blueCount'),
+    yellow:$('#yellowCount'),
+    black:$('#blackCount'),
+    green:$('#greenCount'),
+    crescent:$('#crescentCount'),
+    star14:$('#star14Count'),
+    star5:$('#star5Count'),
+    mapleLeaf:$('#mapleLeafCount'),
+    cross:$('#crossCount'),
+    question:$('#question'),
+    answers:$('#answers'),
+    qFeedback:$('#quizFeedback'),
+    rewardBox:$('#rewardBox'),
+    flagRewardBox:$('#flagRewardBox'),
+    subjectHint:$('#subjectHint'),
+    missionName:$('#missionName'),
+    missionProgress:$('#missionProgress'),
+    progressBar:$('#progressBar'),
+    buildFeedback:$('#buildFeedback'),
+    shopFeedback:$('#shopFeedback'),
+    modeLabel:$('#modeLabel'),
+    selectedLabel:$('#selectedLabel'),
+    worldHelp:$('#worldHelp'),
+    worldInstruction:$('#worldInstruction'),
+    topic:$('#topic'),
+    difficulty:$('#difficulty'),
+    modeNote:$('#modeNote'),
+    saveStatus:$('#saveStatus'),
+    selectedBlockBox:$('#selectedBlockBox'),
+    removeSelectedBtn:$('#removeSelectedBtn'),
+    skipLearnBtn:$('#skipLearnBtn'),
+    flagLabelBox:$('#flagLabelBox'),
+    flagLabelText:$('#flagLabelText')
+  };
+
+  const rand = (min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+  const pick = arr=>arr[rand(0,arr.length-1)];
+  const key = (x,y,z)=>`${x},${y},${z}`;
+
+  function serializeMap(map){
+    return [...map.entries()];
+  }
+
+  function deserializeMap(value){
+    if(!Array.isArray(value)) return new Map();
+    return new Map(value);
+  }
+
+  function saveGame(message='Auto-saved'){
+    const payload = {
+      version:1,
+      savedAt:new Date().toISOString(),
+      score:state.score,
+      coins:state.coins,
+      streak:state.streak,
+      inventory:state.inventory,
+      selectedBlock:state.selectedBlock,
+      tab:state.tab,
+      buildMode:state.buildMode,
+      templateCategory:state.templateCategory,
+      subject:state.subject,
+      level:state.level,
+      flagLevel:state.flagLevel,
+      templatePlaced:serializeMap(state.templatePlaced),
+      templateHistory:state.templateHistory,
+      flagPlaced:serializeMap(state.flagPlaced),
+      flagHistory:state.flagHistory,
+      freePlaced:serializeMap(state.freePlaced),
+      freeHistory:state.freeHistory,
+      difficulty:ui.difficulty.value,
+      topic:ui.topic.value,
+      avatarPosition:{
+        x:state.avatarPosition.x,
+        z:state.avatarPosition.z
+      }
+    };
+
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      const time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      ui.saveStatus.textContent = `💾 ${message} · ${time}`;
+    }catch(err){
+      ui.saveStatus.textContent = '⚠️ Browser tidak membenarkan localStorage.';
+    }
+  }
+
+  function loadGame(){
+    let raw = null;
+    try{
+      raw = localStorage.getItem(STORAGE_KEY);
+    }catch(err){
+      ui.saveStatus.textContent = '⚠️ localStorage tidak tersedia pada browser ini.';
+      return false;
+    }
+
+    if(!raw) return false;
+
+    try{
+      const data = JSON.parse(raw);
+
+      state.score = Number.isFinite(data.score) ? data.score : 0;
+      state.coins = Number.isFinite(data.coins) ? data.coins : 10;
+      state.streak = Number.isFinite(data.streak) ? data.streak : 0;
+
+      state.inventory = {
+        grass:Math.max(0,Number(data.inventory?.grass ?? 3)),
+        wood:Math.max(0,Number(data.inventory?.wood ?? 3)),
+        stone:Math.max(0,Number(data.inventory?.stone ?? 3)),
+        gold:Math.max(0,Number(data.inventory?.gold ?? 1)),
+        red:Math.max(0,Number(data.inventory?.red ?? 3)),
+        white:Math.max(0,Number(data.inventory?.white ?? 3)),
+        blue:Math.max(0,Number(data.inventory?.blue ?? 3)),
+        yellow:Math.max(0,Number(data.inventory?.yellow ?? 3)),
+        black:Math.max(0,Number(data.inventory?.black ?? 2)),
+        green:Math.max(0,Number(data.inventory?.green ?? 2)),
+        crescent:Math.max(0,Number(data.inventory?.crescent ?? 0)),
+        star14:Math.max(0,Number(data.inventory?.star14 ?? 0)),
+        star5:Math.max(0,Number(data.inventory?.star5 ?? 0)),
+        mapleLeaf:Math.max(0,Number(data.inventory?.mapleLeaf ?? 0)),
+        cross:Math.max(0,Number(data.inventory?.cross ?? 0))
+      };
+
+      state.selectedBlock = ['grass','wood','stone','gold','red','white','blue','yellow','black','green'].includes(data.selectedBlock)
+        ? data.selectedBlock : 'grass';
+
+      state.tab = data.tab === 'build' ? 'build' : 'quiz';
+      state.buildMode = data.buildMode === 'free' ? 'free' : 'template';
+      state.templateCategory = data.templateCategory === 'flag' ? 'flag' : 'building';
+      state.subject = data.subject === 'flags' ? 'flags' : 'math';
+
+      const maxLevel = levels.length - 1;
+      state.level = Math.max(0,Math.min(maxLevel,Number(data.level ?? 0)));
+
+      const maxFlagLevel = flagTemplates.length - 1;
+      state.flagLevel = Math.max(0,Math.min(maxFlagLevel,Number(data.flagLevel ?? 0)));
+
+      state.templatePlaced = deserializeMap(data.templatePlaced);
+      state.templateHistory = Array.isArray(data.templateHistory) ? data.templateHistory : [];
+      state.flagPlaced = deserializeMap(data.flagPlaced);
+      state.flagHistory = Array.isArray(data.flagHistory) ? data.flagHistory : [];
+      state.freePlaced = deserializeMap(data.freePlaced);
+      state.freeHistory = Array.isArray(data.freeHistory) ? data.freeHistory : [];
+
+      if(data.avatarPosition &&
+         Number.isFinite(Number(data.avatarPosition.x)) &&
+         Number.isFinite(Number(data.avatarPosition.z))){
+        state.avatarPosition = {
+          x:Math.max(-12,Math.min(12,Number(data.avatarPosition.x))),
+          z:Math.max(-12,Math.min(12,Number(data.avatarPosition.z)))
+        };
+      }
+
+      if(['easy','medium','hard'].includes(data.difficulty)){
+        ui.difficulty.value = data.difficulty;
+      }
+      if(['mix','add','sub','mul','div','square','cube','time','money'].includes(data.topic)){
+        ui.topic.value = data.topic;
+      }
+
+      ui.saveStatus.textContent = '✅ Progress lama dimuatkan.';
+      return true;
+    }catch(err){
+      ui.saveStatus.textContent = '⚠️ Save lama tidak dapat dibaca.';
+      return false;
+    }
+  }
+
+  function clearSavedProgress(){
+    try{
+      localStorage.removeItem(STORAGE_KEY);
+    }catch(err){}
+
+    state.score=0;
+    state.coins=10;
+    state.streak=0;
+    state.inventory={
+      grass:3,wood:3,stone:3,gold:1,
+      red:3,white:3,blue:3,yellow:3,black:2,green:2,
+      crescent:0,star14:0
+    };
+    state.selectedBlock='grass';
+    state.subject='math';
+    state.tab='quiz';
+    state.buildMode='template';
+    state.templateCategory='building';
+    state.level=0;
+    state.flagLevel=0;
+    state.avatarPosition={x:-4,z:-4};
+    state.templatePlaced.clear();
+    state.templateHistory=[];
+    state.flagPlaced.clear();
+    state.flagHistory=[];
+    state.freePlaced.clear();
+    state.freeHistory=[];
+    ui.difficulty.value='medium';
+    ui.topic.value='mix';
+
+    updateUI();
+    renderTemplate();
+    renderFree();
+
+    if(typeof avatar!=='undefined'){
+      avatar.position.x=state.avatarPosition.x;
+      avatar.position.z=state.avatarPosition.z;
+    }
+    if(typeof controls!=='undefined' && typeof camera!=='undefined'){
+      controls.target.set(state.avatarPosition.x,1.4,state.avatarPosition.z);
+      camera.position.set(state.avatarPosition.x+9,8,state.avatarPosition.z+11);
+    }
+
+    setTab('quiz', false);
+    setTemplateCategory('building', false);
+    setBuildMode('template', false);
+    setSubject('math');
+    nextQuestion();
+    ui.saveStatus.textContent='🗑 Progress dipadam. Game bermula semula.';
+  }
+
+  function updateUI(){
+    ui.score.textContent=state.score;
+    ui.coins.textContent=state.coins;
+    ui.streak.textContent=state.streak;
+
+    const activeTemplate = state.templateCategory==='flag'
+      ? flagTemplates[state.flagLevel]
+      : levels[state.level];
+
+    ui.level.textContent = state.templateCategory==='flag'
+      ? `F${state.flagLevel+1}`
+      : state.level+1;
+
+    Object.keys(state.inventory).forEach(type=>{
+      if(ui[type]) ui[type].textContent=state.inventory[type];
+    });
+
+    ui.selectedLabel.textContent=labels[state.selectedBlock];
+    ui.modeLabel.textContent=state.buildMode==='template'
+      ? (state.templateCategory==='flag' ? 'Flag Template' : 'Building Template')
+      : 'Free Build';
+
+    if(state.buildMode==='free'){
+      ui.worldHelp.textContent='Drag = rotate · Scroll = zoom · Tap ground/block = build';
+      ui.worldInstruction.textContent='✨ Klik tanah atau sisi blok untuk bina.';
+    }else if(state.templateCategory==='flag'){
+      ui.worldHelp.textContent='Drag = rotate · Scroll = zoom · Tap flag piece = build';
+      ui.worldInstruction.textContent='🏳️ Klik translucent flag piece untuk bina.';
+    }else{
+      ui.worldHelp.textContent='Drag = rotate · Scroll = zoom · Tap ghost = build';
+      ui.worldInstruction.textContent='👻 Klik ghost block untuk bina.';
+    }
+
+    ui.missionName.textContent=activeTemplate.name;
+
+    if(state.templateCategory==='flag'){
+      ui.flagLabelBox.classList.remove('hidden');
+      ui.flagLabelText.textContent = `${activeTemplate.name} · Country: ${activeTemplate.country}`;
+    }else{
+      ui.flagLabelBox.classList.add('hidden');
+    }
+
+    if(state.buildMode==='template'){
+      const placedCount = state.templateCategory==='flag'
+        ? state.flagPlaced.size
+        : state.templatePlaced.size;
+
+      const totalCount = state.templateCategory==='flag'
+        ? activeTemplate.components.length
+        : activeTemplate.blocks.length;
+
+      ui.missionProgress.textContent=`${placedCount} / ${totalCount} pieces`;
+      ui.progressBar.style.width=`${(placedCount/totalCount)*100}%`;
+    }else{
+      ui.missionProgress.textContent=`${state.freePlaced.size} blok dalam Free Build`;
+      ui.progressBar.style.width='100%';
+    }
+
+    $$('[data-block]').forEach(btn=>{
+      btn.classList.toggle('active',btn.dataset.block===state.selectedBlock);
+    });
+
+    $('#mathSubjectBtn').classList.toggle('active',state.subject==='math');
+    $('#flagsSubjectBtn').classList.toggle('active',state.subject==='flags');
+    $('#buildingTemplateBtn').classList.toggle('active',state.templateCategory==='building');
+    $('#flagTemplateBtn').classList.toggle('active',state.templateCategory==='flag');
+    $('#templateCategoryRow').classList.toggle('hidden',state.buildMode!=='template');
+
+    ui.topic.disabled = state.subject==='flags';
+    ui.topic.style.opacity = state.subject==='flags' ? '.45' : '1';
+
+    ui.subjectHint.textContent = state.subject==='math'
+      ? 'Math mode: solve the problem and choose a building block reward.'
+      : 'Flags mode: identify the country flag. If unsure, use Skip & Learn or learn the answer in Template mode.';
+
+    ui.skipLearnBtn.classList.toggle('hidden', state.subject!=='flags');
+
+    $('#placeToolBtn').classList.toggle('active',state.editTool==='place');
+    $('#removeToolBtn').classList.toggle('active',state.editTool==='remove');
+
+    if(state.selectedBuiltKey){
+      let data=null;
+
+      if(state.selectedBuiltScope==='template'){
+        data=state.templatePlaced.get(state.selectedBuiltKey);
+      }else if(state.selectedBuiltScope==='flag'){
+        data=state.flagPlaced.get(state.selectedBuiltKey);
+      }else if(state.selectedBuiltScope==='free'){
+        data=state.freePlaced.get(state.selectedBuiltKey);
+      }
+
+      if(data){
+        const coords = Number.isFinite(data.x) && Number.isFinite(data.y)
+          ? ` · (${Number(data.x).toFixed(1)}, ${Number(data.y).toFixed(1)})`
+          : '';
+
+        ui.selectedBlockBox.textContent=`Dipilih: ${labels[data.type]}${coords}`;
+        ui.removeSelectedBtn.disabled=false;
+      }else{
+        state.selectedBuiltKey=null;
+        state.selectedBuiltScope=null;
+        ui.selectedBlockBox.textContent='Tiada blok dipilih.';
+        ui.removeSelectedBtn.disabled=true;
+      }
+    }else{
+      ui.selectedBlockBox.textContent='Tiada blok dipilih.';
+      ui.removeSelectedBtn.disabled=true;
+    }
+  }
+
+  function autoSave(){
+    saveGame('Auto-saved');
+  }
+
+  function makeQuestion(type,difficulty){
+    let a,b,answer,text;
+
+    if(type==='add'){
+      a=rand(5,difficulty==='hard'?500:difficulty==='medium'?120:30);
+      b=rand(1,difficulty==='hard'?300:difficulty==='medium'?80:20);
+      answer=a+b;
+      text=`${a} + ${b} = ?`;
+    }else if(type==='sub'){
+      a=rand(20,difficulty==='hard'?500:difficulty==='medium'?150:40);
+      b=rand(1,a);
+      answer=a-b;
+      text=`${a} − ${b} = ?`;
+    }else if(type==='mul'){
+      a=rand(2,difficulty==='hard'?18:difficulty==='medium'?12:6);
+      b=rand(2,difficulty==='hard'?15:difficulty==='medium'?12:6);
+      answer=a*b;
+      text=`${a} × ${b} = ?`;
+    }else if(type==='div'){
+      b=rand(2,difficulty==='hard'?15:difficulty==='medium'?12:6);
+      answer=rand(2,difficulty==='hard'?15:difficulty==='medium'?12:6);
+      a=b*answer;
+      text=`${a} ÷ ${b} = ?`;
+    }else if(type==='square'){
+      a=rand(2,difficulty==='hard'?20:difficulty==='medium'?15:7);
+      answer=a*a;
+      text=`${a}² = ?`;
+    }else if(type==='cube'){
+      a=rand(2,difficulty==='hard'?10:difficulty==='medium'?7:4);
+      answer=a*a*a;
+      text=`${a}³ = ?`;
+    }else if(type==='time'){
+      a=rand(1,11);
+      b=rand(1,difficulty==='hard'?10:difficulty==='medium'?6:3);
+      answer=((a+b-1)%12)+1;
+      text=`Sekarang ${a}:00. ${b} jam lagi pukul berapa?`;
+    }else{
+      a=rand(2,difficulty==='hard'?90:difficulty==='medium'?40:15);
+      b=Math.ceil((a+rand(1,30))/5)*5;
+      answer=b-a;
+      text=`Harga RM${a}. Bayar RM${b}. Baki = RM ?`;
+    }
+
+    return {type,answer,text};
+  }
+
+  const allTopics=['add','sub','mul','div','square','cube','time','money'];
+
+  function makeChoices(answer){
+    const set=new Set([answer]);
+    const spread=Math.max(3,Math.ceil(Math.abs(answer)*.15));
+    let guard=0;
+
+    while(set.size<4 && guard<100){
+      guard++;
+      const v=answer+rand(-spread,spread);
+      if(v>=0) set.add(v);
+    }
+    while(set.size<4) set.add(answer+set.size+1);
+    return [...set].sort(()=>Math.random()-.5);
+  }
+
+  function starPoints(cx,cy,outerR,innerR,points){
+    const pts=[];
+    for(let i=0;i<points*2;i++){
+      const radius=i%2===0?outerR:innerR;
+      const angle=(-Math.PI/2)+(Math.PI*i/points);
+      pts.push(
+        `${(cx+Math.cos(angle)*radius).toFixed(2)},${(cy+Math.sin(angle)*radius).toFixed(2)}`
+      );
+    }
+    return pts.join(' ');
+  }
+
+  function renderQuizFlag(country){
+    const wrap = svg => `<span class="flag-preview">${svg}</span>`;
+
+    if(country==='Japan'){
+      return wrap(`
+        <svg viewBox="0 0 300 200" role="img" aria-label="Flag of Japan">
+          <rect width="300" height="200" fill="#ffffff"/>
+          <circle cx="150" cy="100" r="60" fill="#bc002d"/>
+        </svg>
+      `);
+    }
+
+    if(country==='France'){
+      return wrap(`
+        <svg viewBox="0 0 300 200" role="img" aria-label="Flag of France">
+          <rect width="100" height="200" x="0" fill="#0055a4"/>
+          <rect width="100" height="200" x="100" fill="#ffffff"/>
+          <rect width="100" height="200" x="200" fill="#ef4135"/>
+        </svg>
+      `);
+    }
+
+    if(country==='Germany'){
+      return wrap(`
+        <svg viewBox="0 0 300 180" role="img" aria-label="Flag of Germany">
+          <rect width="300" height="60" y="0" fill="#000000"/>
+          <rect width="300" height="60" y="60" fill="#dd0000"/>
+          <rect width="300" height="60" y="120" fill="#ffce00"/>
+        </svg>
+      `);
+    }
+
+    if(country==='Indonesia'){
+      return wrap(`
+        <svg viewBox="0 0 300 200" role="img" aria-label="Flag of Indonesia">
+          <rect width="300" height="100" y="0" fill="#ce1126"/>
+          <rect width="300" height="100" y="100" fill="#ffffff"/>
+        </svg>
+      `);
+    }
+
+    if(country==='Italy'){
+      return wrap(`
+        <svg viewBox="0 0 300 200" role="img" aria-label="Flag of Italy">
+          <rect width="100" height="200" x="0" fill="#009246"/>
+          <rect width="100" height="200" x="100" fill="#ffffff"/>
+          <rect width="100" height="200" x="200" fill="#ce2b37"/>
+        </svg>
+      `);
+    }
+
+    if(country==='Switzerland'){
+      return wrap(`
+        <svg viewBox="0 0 200 200" role="img" aria-label="Flag of Switzerland">
+          <rect width="200" height="200" fill="#d52b1e"/>
+          <rect x="82" y="42" width="36" height="116" fill="#ffffff"/>
+          <rect x="42" y="82" width="116" height="36" fill="#ffffff"/>
+        </svg>
+      `);
+    }
+
+    if(country==='Canada'){
+      return wrap(`
+        <svg viewBox="0 0 300 150" role="img" aria-label="Flag of Canada">
+          <rect width="75" height="150" x="0" fill="#d80621"/>
+          <rect width="150" height="150" x="75" fill="#ffffff"/>
+          <rect width="75" height="150" x="225" fill="#d80621"/>
+          <polygon
+            points="150,25 160,55 177,45 172,69 194,67 179,84 190,92 163,91 166,122 150,111 134,122 137,91 110,92 121,84 106,67 128,69 123,45 140,55"
+            fill="#d80621"/>
+        </svg>
+      `);
+    }
+
+    if(country==='Turkey'){
+      return wrap(`
+        <svg viewBox="0 0 300 200" role="img" aria-label="Flag of Turkey">
+          <rect width="300" height="200" fill="#e30a17"/>
+          <circle cx="115" cy="100" r="52" fill="#ffffff"/>
+          <circle cx="132" cy="100" r="42" fill="#e30a17"/>
+          <polygon points="${starPoints(182,100,25,10.5,5)}" fill="#ffffff"/>
+        </svg>
+      `);
+    }
+
+    if(country==='Malaysia'){
+      let stripes='';
+      for(let i=0;i<14;i++){
+        stripes += `<rect x="0" y="${i*10}" width="280" height="10" fill="${i%2===0?'#cc0001':'#ffffff'}"/>`;
+      }
+
+      return wrap(`
+        <svg viewBox="0 0 280 140" role="img" aria-label="Flag of Malaysia">
+          ${stripes}
+          <rect x="0" y="0" width="140" height="80" fill="#010066"/>
+          <circle cx="48" cy="40" r="25" fill="#ffcc00"/>
+          <circle cx="57" cy="36" r="21" fill="#010066"/>
+          <polygon points="${starPoints(105,40,18,7.2,14)}" fill="#ffcc00"/>
+        </svg>
+      `);
+    }
+
+    return wrap(`
+      <svg viewBox="0 0 300 180" role="img" aria-label="Flag preview unavailable">
+        <rect width="300" height="180" fill="#eef2f6"/>
+        <text x="150" y="92" text-anchor="middle" font-size="20" font-family="Arial" fill="#475569">
+          Flag preview unavailable
+        </text>
+      </svg>
+    `);
+  }
+
+  function makeFlagQuestion(difficulty){
+    const templateCountries = flagTemplates.map(t=>t.country);
+    const allowed = flagQuizBank.filter(item=>templateCountries.includes(item.country));
+
+    const correct = pick(allowed);
+
+    const distractors = [];
+    const pool = allowed.filter(item=>item.country!==correct.country);
+
+    while(distractors.length<3){
+      const item=pick(pool);
+      if(!distractors.some(x=>x.country===item.country)){
+        distractors.push(item);
+      }
+    }
+
+    const options=[correct,...distractors]
+      .map(item=>item.country)
+      .sort(()=>Math.random()-.5);
+
+    return {
+      type:'flag',
+      answer:correct.country,
+      flag:correct.flag,
+      text:`${renderQuizFlag(correct.country)}<span class="flag-question-text">Negara manakah mempunyai bendera ini?</span>`,
+      options
+    };
+  }
+
+  function renderQuestionOptions(question){
+    ui.answers.innerHTML='';
+
+    if(question.type==='flag'){
+      question.options.forEach(value=>{
+        const btn=document.createElement('button');
+        btn.className='answer';
+        btn.type='button';
+        btn.textContent=value;
+        btn.addEventListener('click',()=>answerQuestion(value));
+        ui.answers.appendChild(btn);
+      });
+      return;
+    }
+
+    makeChoices(question.answer).forEach(value=>{
+      const btn=document.createElement('button');
+      btn.className='answer';
+      btn.type='button';
+
+      if(question.type==='money') btn.textContent=`RM${value}`;
+      else if(question.type==='time') btn.textContent=`${value}:00`;
+      else btn.textContent=value;
+
+      btn.addEventListener('click',()=>answerQuestion(value));
+      ui.answers.appendChild(btn);
+    });
+  }
+
+  function findFlagTemplateIndexByCountry(country){
+    return flagTemplates.findIndex(t=>t.country===country);
+  }
+
+  function openFlagTemplateForCountry(country, reason='learn'){
+    const idx = findFlagTemplateIndexByCountry(country);
+    if(idx === -1) return false;
+
+    state.flagLevel = idx;
+    state.templateCategory = 'flag';
+    state.buildMode = 'template';
+    state.tab = 'build';
+
+    renderTemplate();
+    setTemplateCategory('flag', false);
+    setBuildMode('template', false);
+    setTab('build', false);
+    updateUI();
+
+    ui.buildFeedback.textContent = reason==='wrong'
+      ? `📘 Jawapan betul: ${country}. Sekarang bina bendera ini untuk belajar nama dan bentuknya.`
+      : `📘 Belajar bendera: ${country}. Bina template ini untuk kenal bentuk dan nama benderanya.`;
+
+    autoSave();
+    return true;
+  }
+
+  function skipAndLearnCurrentFlag(){
+    if(state.subject!=='flags' || !state.currentQuestion) return;
+    state.answeringLocked = true;
+    ui.qFeedback.textContent = `⏭ Skip. Jom belajar bendera ${state.currentQuestion.answer} melalui template.`;
+    openFlagTemplateForCountry(state.currentQuestion.answer, 'skip');
+  }
+
+  $('#skipLearnBtn').addEventListener('click', skipAndLearnCurrentFlag);
+
+  function nextQuestion(){
+    state.answeringLocked=false;
+    ui.rewardBox.classList.add('hidden');
+    ui.flagRewardBox.classList.add('hidden');
+    ui.qFeedback.textContent='';
+
+    if(state.subject==='flags'){
+      state.currentQuestion=makeFlagQuestion(ui.difficulty.value);
+      ui.question.innerHTML=state.currentQuestion.text;
+      renderQuestionOptions(state.currentQuestion);
+      return;
+    }
+
+    const type=ui.topic.value==='mix'?pick(allTopics):ui.topic.value;
+    state.currentQuestion=makeQuestion(type,ui.difficulty.value);
+    ui.question.textContent=state.currentQuestion.text;
+    renderQuestionOptions(state.currentQuestion);
+  }
+
+  function answerQuestion(value){
+    if(state.answeringLocked) return;
+    state.answeringLocked=true;
+
+    if(value===state.currentQuestion.answer){
+      const rewardByDifficulty = {
+        easy:{score:5,coins:1,label:'Easy'},
+        medium:{score:10,coins:2,label:'Medium'},
+        hard:{score:20,coins:4,label:'Hard'}
+      };
+
+      const difficulty = ui.difficulty.value;
+      const reward = rewardByDifficulty[difficulty];
+
+      state.score += reward.score;
+      state.coins += reward.coins;
+      state.streak += 1;
+
+      let streakBonus = 0;
+
+      if(state.streak % 10 === 0){
+        streakBonus = 25;
+      }else if(state.streak % 5 === 0){
+        streakBonus = 10;
+      }else if(state.streak % 3 === 0){
+        streakBonus = 5;
+      }
+
+      state.score += streakBonus;
+
+      let message = `✅ Betul! +${reward.score} markah · +${reward.coins} syiling`;
+
+      if(streakBonus > 0){
+        message += ` · 🔥 Bonus streak +${streakBonus} markah!`;
+      }
+
+      if(state.subject==='flags'){
+        message += ' · 🎨 Pilih 1 warna flag';
+        ui.flagRewardBox.classList.remove('hidden');
+      }else{
+        message += ' · 🎁 Pilih 1 blok binaan';
+        ui.rewardBox.classList.remove('hidden');
+      }
+
+      ui.qFeedback.textContent = message;
+
+      updateUI();
+      autoSave();
+    }else{
+      state.streak=0;
+      ui.qFeedback.textContent=state.subject==='flags'
+        ? `🧠 Jawapan betul ialah ${state.currentQuestion.answer}. Streak kembali ke 0. Template bendera akan dibuka untuk belajar.`
+        : `🧠 Jawapan betul ialah ${state.currentQuestion.answer}. Streak kembali ke 0.`;
+
+      updateUI();
+      autoSave();
+
+      if(state.subject==='flags'){
+        setTimeout(()=>openFlagTemplateForCountry(state.currentQuestion.answer, 'wrong'),900);
+      }else{
+        setTimeout(nextQuestion,1100);
+      }
+    }
+  }
+
+  $$('[data-reward]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const type=btn.dataset.reward;
+      state.inventory[type]++;
+      ui.rewardBox.classList.add('hidden');
+      ui.qFeedback.textContent=`🎁 +1 blok ${labels[type]}!`;
+      updateUI();
+      autoSave();
+      setTimeout(nextQuestion,650);
+    });
+  });
+
+  $$('[data-flag-reward]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const type=btn.dataset.flagReward;
+      state.inventory[type]++;
+      ui.flagRewardBox.classList.add('hidden');
+      ui.qFeedback.textContent=`🎨 +1 ${labels[type]} flag material!`;
+      updateUI();
+      autoSave();
+      setTimeout(nextQuestion,650);
+    });
+  });
+
+  function setSubject(subject){
+    state.subject=subject;
+    ui.rewardBox.classList.add('hidden');
+    ui.flagRewardBox.classList.add('hidden');
+    state.answeringLocked=false;
+    updateUI();
+    nextQuestion();
+    autoSave();
+  }
+
+  $('#mathSubjectBtn').addEventListener('click',()=>setSubject('math'));
+  $('#flagsSubjectBtn').addEventListener('click',()=>setSubject('flags'));
+
+  ui.topic.addEventListener('change',()=>{
+    if(state.subject==='math') nextQuestion();
+    autoSave();
+  });
+
+  ui.difficulty.addEventListener('change',()=>{
+    nextQuestion();
+    autoSave();
+  });
+
+  let THREE,OrbitControls;
+  try{
+    THREE=await import('https://cdn.jsdelivr.net/npm/three@0.167.1/+esm');
+    ({OrbitControls}=await import('https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/controls/OrbitControls.js/+esm'));
+  }catch(err){
+    $('#threeStatus').textContent='3D module tidak dapat dimuatkan. Pastikan internet aktif untuk memuatkan Three.js.';
+    loadGame();
+    updateUI();
+    nextQuestion();
+    return;
+  }
+
+  const css=getComputedStyle(document.documentElement);
+  const cssColor=(name,fallback)=>css.getPropertyValue(name).trim()||fallback;
+
+  const blockColors={
+    grass:cssColor('--series-2','#68b54d'),
+    wood:cssColor('--series-3','#b27c4b'),
+    stone:cssColor('--series-4','#7f8c98'),
+    gold:cssColor('--series-5','#d7a81e'),
+    red:'#d62828',
+    white:'#f7f7f4',
+    blue:'#1556a8',
+    yellow:'#f6c945',
+    black:'#222222',
+    green:'#238b45',
+    crescent:'#f6c945',
+    star14:'#f6c945',
+    star5:'#f6c945',
+    mapleLeaf:'#d62828',
+    cross:'#f7f7f4'
+  };
+
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color(cssColor('--panel','#eef7fb'));
+
+  const canvas=$('#threeCanvas');
+  const box=$('#sceneBox');
+
+  const camera=new THREE.PerspectiveCamera(55,1,.1,200);
+  camera.position.set(9,8,11);
+
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+
+  const controls=new OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true;
+  controls.target.set(1,1.5,1);
+  controls.maxPolarAngle=Math.PI*.49;
+
+  scene.add(new THREE.HemisphereLight(0xffffff,0x839178,1.55));
+
+  const sun=new THREE.DirectionalLight(0xffffff,1.35);
+  sun.position.set(9,14,8);
+  scene.add(sun);
+
+  const ground=new THREE.Mesh(
+    new THREE.PlaneGeometry(30,30),
+    new THREE.MeshStandardMaterial({
+      color:cssColor('--series-6','#b8d8a8'),
+      roughness:1
+    })
+  );
+  ground.rotation.x=-Math.PI/2;
+  ground.name='ground';
+  scene.add(ground);
+
+  scene.add(new THREE.GridHelper(30,30,0x80909b,0xc6d0d7));
+
+  const ghostGroup=new THREE.Group();
+  const templateGroup=new THREE.Group();
+  const freeGroup=new THREE.Group();
+  const avatar=new THREE.Group();
+
+  scene.add(ghostGroup,templateGroup,freeGroup,avatar);
+
+  const cubeGeometry=new THREE.BoxGeometry(.94,.94,.94);
+
+  function makeCube(type,ghost=false){
+    return new THREE.Mesh(
+      cubeGeometry,
+      new THREE.MeshStandardMaterial({
+        color:blockColors[type],
+        transparent:ghost,
+        opacity:ghost?.42:1,
+        depthWrite:!ghost,
+        roughness:type==='gold'?.35:.8,
+        metalness:type==='gold'?.25:0
+      })
+    );
+  }
+
+  function clearGroup(group){
+    while(group.children.length){
+      const child=group.children.pop();
+
+      if(child.geometry && child.geometry !== cubeGeometry){
+        child.geometry.dispose?.();
+      }
+
+      child.material?.dispose?.();
+    }
+  }
+
+  function makeFlatMaterial(type,ghost=false){
+    return new THREE.MeshStandardMaterial({
+      color:blockColors[type] || '#ffffff',
+      transparent:ghost,
+      opacity:ghost?.40:1,
+      depthWrite:!ghost,
+      side:THREE.DoubleSide,
+      roughness:.72,
+      metalness:0
+    });
+  }
+
+  function createCrescentGeometry(scale=1){
+    const shape=new THREE.Shape();
+    const outerR=.75*scale;
+    const innerR=.58*scale;
+    const shift=.27*scale;
+    const points=[];
+
+    for(let i=0;i<=30;i++){
+      const a=(Math.PI/2)+(Math.PI*i/30);
+      points.push([Math.cos(a)*outerR,Math.sin(a)*outerR]);
+    }
+
+    for(let i=0;i<=30;i++){
+      const a=(Math.PI*1.5)-(Math.PI*i/30);
+      points.push([shift+(Math.cos(a)*innerR),Math.sin(a)*innerR]);
+    }
+
+    shape.moveTo(points[0][0],points[0][1]);
+    for(let i=1;i<points.length;i++){
+      shape.lineTo(points[i][0],points[i][1]);
+    }
+    shape.closePath();
+
+    return new THREE.ShapeGeometry(shape);
+  }
+
+  function createStarGeometry(pointsCount=14,outer=.72,inner=.32){
+    const shape=new THREE.Shape();
+
+    for(let i=0;i<pointsCount*2;i++){
+      const radius=i%2===0?outer:inner;
+      const angle=(-Math.PI/2)+(Math.PI*i/pointsCount);
+      const x=Math.cos(angle)*radius;
+      const y=Math.sin(angle)*radius;
+
+      if(i===0) shape.moveTo(x,y);
+      else shape.lineTo(x,y);
+    }
+
+    shape.closePath();
+    return new THREE.ShapeGeometry(shape);
+  }
+
+  function createCrossGeometry(scale=1){
+    const s=scale;
+    const shape=new THREE.Shape();
+    shape.moveTo(-0.24*s, -0.75*s);
+    shape.lineTo(0.24*s, -0.75*s);
+    shape.lineTo(0.24*s, -0.24*s);
+    shape.lineTo(0.75*s, -0.24*s);
+    shape.lineTo(0.75*s, 0.24*s);
+    shape.lineTo(0.24*s, 0.24*s);
+    shape.lineTo(0.24*s, 0.75*s);
+    shape.lineTo(-0.24*s, 0.75*s);
+    shape.lineTo(-0.24*s, 0.24*s);
+    shape.lineTo(-0.75*s, 0.24*s);
+    shape.lineTo(-0.75*s, -0.24*s);
+    shape.lineTo(-0.24*s, -0.24*s);
+    shape.closePath();
+    return new THREE.ShapeGeometry(shape);
+  }
+
+  function createMapleLeafGeometry(scale=1){
+    const s=scale;
+    const pts = [
+      [0,1.05],[0.12,0.58],[0.44,0.78],[0.34,0.36],[0.73,0.48],[0.45,0.10],
+      [0.78,-0.05],[0.28,-0.19],[0.36,-0.82],[0,-0.44],[-0.36,-0.82],[-0.28,-0.19],
+      [-0.78,-0.05],[-0.45,0.10],[-0.73,0.48],[-0.34,0.36],[-0.44,0.78],[-0.12,0.58]
+    ].map(([x,y])=>[x*s,y*s]);
+
+    const shape=new THREE.Shape();
+    shape.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length;i++){
+      shape.lineTo(pts[i][0],pts[i][1]);
+    }
+    shape.closePath();
+    return new THREE.ShapeGeometry(shape);
+  }
+
+  function makeFlagComponent(component,ghost=false){
+    let geometry;
+
+    if(component.shape==='rect'){
+      geometry=new THREE.BoxGeometry(component.w,component.h,component.d || .20);
+    }else if(component.shape==='circle'){
+      geometry=new THREE.CircleGeometry(component.r,48);
+    }else if(component.shape==='crescent'){
+      geometry=createCrescentGeometry(component.scale || 1);
+    }else if(component.shape==='star14'){
+      geometry=createStarGeometry(14,.75*(component.scale||1),.34*(component.scale||1));
+    }else if(component.shape==='star5'){
+      geometry=createStarGeometry(5,.75*(component.scale||1),.33*(component.scale||1));
+    }else if(component.shape==='cross'){
+      geometry=createCrossGeometry(component.scale || 1);
+    }else if(component.shape==='mapleLeaf'){
+      geometry=createMapleLeafGeometry(component.scale || 1);
+    }else{
+      geometry=new THREE.BoxGeometry(1,1,.20);
+    }
+
+    const mesh=new THREE.Mesh(geometry,makeFlatMaterial(component.type,ghost));
+    mesh.position.set(component.x,component.y,component.z || 0);
+
+    mesh.userData={
+      kind:ghost?'ghost':'flagBuilt',
+      type:component.type,
+      key:component.id,
+      id:component.id,
+      x:component.x,
+      y:component.y,
+      z:component.z || 0,
+      component
+    };
+
+    return mesh;
+  }
+
+  function renderTemplate(){
+    clearGroup(ghostGroup);
+    clearGroup(templateGroup);
+
+    if(state.templateCategory==='flag'){
+      const template=flagTemplates[state.flagLevel];
+
+      for(const component of template.components){
+        const k=component.id;
+
+        if(state.flagPlaced.has(k)){
+          const mesh=makeFlagComponent(component,false);
+
+          if(state.selectedBuiltScope==='flag' && state.selectedBuiltKey===k){
+            mesh.material.emissive=new THREE.Color(0x66ccff);
+            mesh.material.emissiveIntensity=.55;
+          }
+
+          templateGroup.add(mesh);
+        }else{
+          const mesh=makeFlagComponent(component,true);
+          mesh.userData.kind='ghost';
+          ghostGroup.add(mesh);
+        }
+      }
+    }else{
+      const level=levels[state.level];
+
+      for(const [x,y,z,type] of level.blocks){
+        const k=key(x,y,z);
+
+        if(state.templatePlaced.has(k)){
+          const mesh=makeCube(type,false);
+          mesh.position.set(x,y+.5,z);
+          mesh.userData={kind:'templateBuilt',x,y,z,type,key:k};
+
+          if(state.selectedBuiltScope==='template' && state.selectedBuiltKey===k){
+            mesh.material.emissive=new THREE.Color(0x66ccff);
+            mesh.material.emissiveIntensity=.55;
+          }
+
+          templateGroup.add(mesh);
+        }else{
+          const mesh=makeCube(type,true);
+          mesh.position.set(x,y+.5,z);
+          mesh.userData={kind:'ghost',x,y,z,type,key:k};
+          ghostGroup.add(mesh);
+        }
+      }
+    }
+
+    ghostGroup.visible=state.buildMode==='template';
+    templateGroup.visible=state.buildMode==='template';
+  }
+
+  function renderFree(){
+    clearGroup(freeGroup);
+
+    for(const [,data] of state.freePlaced){
+      const mesh=makeCube(data.type,false);
+      mesh.position.set(data.x,data.y+.5,data.z);
+      mesh.userData={
+        kind:'free',
+        key:data.key,
+        x:data.x,
+        y:data.y,
+        z:data.z,
+        type:data.type
+      };
+
+      if(state.selectedBuiltScope==='free' && state.selectedBuiltKey===data.key){
+        mesh.material.emissive=new THREE.Color(0x66ccff);
+        mesh.material.emissiveIntensity=.55;
+      }
+
+      freeGroup.add(mesh);
+    }
+
+    freeGroup.visible=state.buildMode==='free';
+  }
+
+  function buildAvatar(){
+    avatar.clear();
+
+    const bodyMat=new THREE.MeshStandardMaterial({color:'#6d89c8'});
+    const skinMat=new THREE.MeshStandardMaterial({color:'#e2b88f'});
+    const darkMat=new THREE.MeshStandardMaterial({color:'#3e4653'});
+
+    const body=new THREE.Mesh(new THREE.BoxGeometry(.55,.75,.32),bodyMat);
+    body.position.y=.95;
+
+    const head=new THREE.Mesh(new THREE.BoxGeometry(.48,.48,.48),skinMat);
+    head.position.y=1.58;
+
+    const leg1=new THREE.Mesh(new THREE.BoxGeometry(.2,.55,.22),darkMat);
+    leg1.position.set(-.14,.28,0);
+
+    const leg2=leg1.clone();
+    leg2.position.x=.14;
+
+    avatar.add(body,head,leg1,leg2);
+    avatar.position.set(state.avatarPosition.x,0,state.avatarPosition.z);
+  }
+
+  buildAvatar();
+
+  function moveAvatar(dx,dz){
+    const oldX=state.avatarPosition.x;
+    const oldZ=state.avatarPosition.z;
+
+    state.avatarPosition.x=Math.max(-12,Math.min(12,oldX+dx));
+    state.avatarPosition.z=Math.max(-12,Math.min(12,oldZ+dz));
+
+    avatar.position.x=state.avatarPosition.x;
+    avatar.position.z=state.avatarPosition.z;
+
+    if(dx!==0 || dz!==0){
+      avatar.rotation.y=Math.atan2(dx,dz);
+    }
+
+    if(state.cameraFollow){
+      const shiftX=state.avatarPosition.x-oldX;
+      const shiftZ=state.avatarPosition.z-oldZ;
+
+      camera.position.x+=shiftX;
+      camera.position.z+=shiftZ;
+      controls.target.x+=shiftX;
+      controls.target.z+=shiftZ;
+    }
+
+    autoSave();
+  }
+
+  $('#moveUpBtn').addEventListener('click',()=>moveAvatar(0,-1));
+  $('#moveDownBtn').addEventListener('click',()=>moveAvatar(0,1));
+  $('#moveLeftBtn').addEventListener('click',()=>moveAvatar(-1,0));
+  $('#moveRightBtn').addEventListener('click',()=>moveAvatar(1,0));
+
+  root.addEventListener('keydown',event=>{
+    const tag=(event.target && event.target.tagName) ? event.target.tagName : '';
+    if(['INPUT','SELECT','TEXTAREA','BUTTON'].includes(tag)) return;
+
+    const keyName=event.key.toLowerCase();
+
+    if(keyName==='w' || keyName==='arrowup'){
+      event.preventDefault();
+      moveAvatar(0,-1);
+    }else if(keyName==='s' || keyName==='arrowdown'){
+      event.preventDefault();
+      moveAvatar(0,1);
+    }else if(keyName==='a' || keyName==='arrowleft'){
+      event.preventDefault();
+      moveAvatar(-1,0);
+    }else if(keyName==='d' || keyName==='arrowright'){
+      event.preventDefault();
+      moveAvatar(1,0);
+    }
+  });
+
+  const raycaster=new THREE.Raycaster();
+  const pointer=new THREE.Vector2();
+
+  function setRay(event){
+    const rect=canvas.getBoundingClientRect();
+    pointer.x=((event.clientX-rect.left)/rect.width)*2-1;
+    pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;
+    raycaster.setFromCamera(pointer,camera);
+  }
+
+  const flash=$('#flash');
+
+  function pop(message){
+    flash.textContent=message;
+    flash.classList.add('show');
+    setTimeout(()=>flash.classList.remove('show'),550);
+  }
+
+  function placeTemplateBlock(data){
+    if(state.templateCategory==='flag'){
+      const needed=data.type;
+
+      if(state.inventory[needed]<=0){
+        ui.buildFeedback.textContent=`❗ Flag piece perlukan ${labels[needed]}, tetapi inventory kosong.`;
+        pop(`Perlu ${labels[needed]}`);
+        return;
+      }
+
+      state.inventory[needed]--;
+      state.flagPlaced.set(data.key,{
+        ...data,
+        component:data.component || data
+      });
+      state.flagHistory.push(data.key);
+
+      ui.buildFeedback.textContent=`✅ ${labels[needed]} diletakkan pada flag.`;
+      pop(`🏳️ ${labels[needed]}`);
+
+      renderTemplate();
+      updateUI();
+      autoSave();
+
+      const currentFlag=flagTemplates[state.flagLevel];
+
+      if(state.flagPlaced.size===currentFlag.components.length){
+        state.score+=125;
+        state.coins+=currentFlag.reward;
+
+        const completedName=currentFlag.name;
+
+        if(state.flagLevel<flagTemplates.length-1){
+          state.flagLevel++;
+        }else{
+          state.flagLevel=0;
+        }
+
+        state.flagPlaced.clear();
+        state.flagHistory=[];
+        state.selectedBuiltKey=null;
+        state.selectedBuiltScope=null;
+
+        ui.buildFeedback.textContent=
+          `🏆 ${completedName} siap! +125 markah · +${currentFlag.reward} syiling. Next: ${flagTemplates[state.flagLevel].name}`;
+
+        renderTemplate();
+        updateUI();
+        autoSave();
+      }
+
+      return;
+    }
+
+    const needed=data.type;
+
+    if(state.inventory[needed]<=0){
+      ui.buildFeedback.textContent=`❗ Perlukan ${labels[needed]}, tetapi inventory kosong.`;
+      pop(`Perlu ${labels[needed]}`);
+      return;
+    }
+
+    state.inventory[needed]--;
+    state.templatePlaced.set(data.key,data);
+    state.templateHistory.push(data.key);
+
+    ui.buildFeedback.textContent=`✅ ${labels[needed]} diletakkan.`;
+    pop(`🧱 ${labels[needed]}`);
+
+    renderTemplate();
+    updateUI();
+    autoSave();
+
+    if(state.templatePlaced.size===levels[state.level].blocks.length){
+      const completed=levels[state.level];
+
+      state.score+=100;
+      state.coins+=completed.reward;
+
+      if(state.level<levels.length-1){
+        state.level++;
+        state.templatePlaced.clear();
+        state.templateHistory=[];
+
+        ui.buildFeedback.textContent=
+          `🏆 ${completed.name} siap! Level baru: ${levels[state.level].name}`;
+      }else{
+        state.level=0;
+        state.templatePlaced.clear();
+        state.templateHistory=[];
+
+        ui.buildFeedback.textContent=
+          '👑 Semua blueprint siap! Pusingan baharu bermula.';
+      }
+
+      renderTemplate();
+      updateUI();
+      autoSave();
+    }
+  }
+
+  function placeFreeBlock(hit){
+    const selected=state.selectedBlock;
+
+    if(state.inventory[selected]<=0){
+      ui.buildFeedback.textContent=`❗ Tiada blok ${labels[selected]}.`;
+      return;
+    }
+
+    let x,y,z;
+
+    if(hit.object===ground){
+      x=Math.round(hit.point.x);
+      z=Math.round(hit.point.z);
+      y=0;
+    }else{
+      const data=hit.object.userData;
+      const normal=hit.face?.normal;
+
+      if(!data||!normal) return;
+
+      x=data.x+Math.round(normal.x);
+      y=data.y+Math.round(normal.y);
+      z=data.z+Math.round(normal.z);
+    }
+
+    if(y<0||y>10||Math.abs(x)>12||Math.abs(z)>12) return;
+
+    const k=key(x,y,z);
+
+    if(state.freePlaced.has(k)){
+      ui.buildFeedback.textContent='Petak itu sudah ada blok.';
+      return;
+    }
+
+    state.inventory[selected]--;
+
+    const data={
+      x,y,z,
+      type:selected,
+      key:k
+    };
+
+    state.freePlaced.set(k,data);
+    state.freeHistory.push(k);
+
+    ui.buildFeedback.textContent=`✨ ${labels[selected]} ditambah ke Free Build.`;
+    pop('✨ Block placed');
+
+    renderFree();
+    updateUI();
+    autoSave();
+  }
+
+  function clearBuiltSelection(){
+    state.selectedBuiltKey=null;
+    state.selectedBuiltScope=null;
+    renderTemplate();
+    renderFree();
+    updateUI();
+  }
+
+  function selectBuiltBlock(hit,scope){
+    const data=hit.object.userData;
+    if(!data || !data.key) return;
+
+    state.selectedBuiltKey=data.key;
+    state.selectedBuiltScope=scope;
+
+    renderTemplate();
+    renderFree();
+    updateUI();
+
+    ui.buildFeedback.textContent=`🎯 ${labels[data.type]} dipilih. Tekan Remove Selected untuk keluarkan.`;
+  }
+
+  function removeSelectedBlock(){
+    if(!state.selectedBuiltKey || !state.selectedBuiltScope){
+      ui.buildFeedback.textContent='Tiada blok dipilih.';
+      return;
+    }
+
+    if(state.selectedBuiltScope==='template'){
+      const data=state.templatePlaced.get(state.selectedBuiltKey);
+      if(!data){
+        clearBuiltSelection();
+        return;
+      }
+
+      state.templatePlaced.delete(state.selectedBuiltKey);
+      state.templateHistory=state.templateHistory.filter(k=>k!==state.selectedBuiltKey);
+      state.inventory[data.type]++;
+
+      ui.buildFeedback.textContent=`🗑 ${labels[data.type]} dikeluarkan dan dipulangkan ke inventory.`;
+      pop(`↩ ${labels[data.type]}`);
+    }else if(state.selectedBuiltScope==='flag'){
+      const data=state.flagPlaced.get(state.selectedBuiltKey);
+      if(!data){
+        clearBuiltSelection();
+        return;
+      }
+
+      state.flagPlaced.delete(state.selectedBuiltKey);
+      state.flagHistory=state.flagHistory.filter(k=>k!==state.selectedBuiltKey);
+      state.inventory[data.type]++;
+
+      ui.buildFeedback.textContent=`🗑 ${labels[data.type]} flag piece dikeluarkan dan dipulangkan.`;
+      pop(`↩ ${labels[data.type]}`);
+    }else{
+      const data=state.freePlaced.get(state.selectedBuiltKey);
+      if(!data){
+        clearBuiltSelection();
+        return;
+      }
+
+      state.freePlaced.delete(state.selectedBuiltKey);
+      state.freeHistory=state.freeHistory.filter(k=>k!==state.selectedBuiltKey);
+      state.inventory[data.type]++;
+
+      ui.buildFeedback.textContent=`🗑 ${labels[data.type]} dikeluarkan dan dipulangkan ke inventory.`;
+      pop(`↩ ${labels[data.type]}`);
+    }
+
+    state.selectedBuiltKey=null;
+    state.selectedBuiltScope=null;
+
+    renderTemplate();
+    renderFree();
+    updateUI();
+    autoSave();
+  }
+
+  let pointerDown=null;
+
+  canvas.addEventListener('pointerdown',event=>{
+    pointerDown={x:event.clientX,y:event.clientY};
+  });
+
+  canvas.addEventListener('pointerup',event=>{
+    if(state.tab!=='build'||!pointerDown) return;
+
+    const moved=Math.hypot(
+      event.clientX-pointerDown.x,
+      event.clientY-pointerDown.y
+    );
+
+    pointerDown=null;
+
+    if(moved>7) return;
+
+    setRay(event);
+
+    if(state.editTool==='remove'){
+      if(state.buildMode==='template'){
+        const hits=raycaster.intersectObjects(templateGroup.children,false);
+
+        if(hits[0]){
+          selectBuiltBlock(
+            hits[0],
+            state.templateCategory==='flag' ? 'flag' : 'template'
+          );
+        }else{
+          ui.buildFeedback.textContent=state.templateCategory==='flag'
+            ? '🎯 Select Tool: klik flag piece yang sudah diletakkan.'
+            : '🎯 Select Tool: klik blok yang sudah dibina.';
+          clearBuiltSelection();
+        }
+      }else{
+        const hits=raycaster.intersectObjects(freeGroup.children,false);
+
+        if(hits[0]){
+          selectBuiltBlock(hits[0],'free');
+        }else{
+          ui.buildFeedback.textContent='🎯 Select Tool: klik blok Free Build yang mahu dibuang.';
+          clearBuiltSelection();
+        }
+      }
+      return;
+    }
+
+    if(state.buildMode==='template'){
+      const hits=raycaster.intersectObjects(ghostGroup.children,false);
+
+      if(hits[0]){
+        placeTemplateBlock(hits[0].object.userData);
+      }else{
+        ui.buildFeedback.textContent='👻 Place Tool: klik terus pada ghost block berwarna.';
+        pop('Klik ghost block');
+      }
+    }else{
+      const hits=raycaster.intersectObjects([...freeGroup.children,ground],false);
+
+      if(hits[0]){
+        placeFreeBlock(hits[0]);
+      }
+    }
+  });
+
+  function frameCurrentTemplate(){
+    if(state.templateCategory==='flag'){
+      controls.target.set(0,2.5,0);
+      camera.position.set(0,4.8,11);
+    }else{
+      controls.target.set(1,1.5,1);
+      camera.position.set(8,7,10);
+    }
+  }
+
+  function setTemplateCategory(category,shouldSave=true){
+    state.templateCategory=category;
+    state.selectedBuiltKey=null;
+    state.selectedBuiltScope=null;
+
+    renderTemplate();
+    frameCurrentTemplate();
+    updateUI();
+
+    ui.modeNote.innerHTML=category==='flag'
+      ? '<strong>Flag Template:</strong> nama bendera dipaparkan di bawah misi. Klik translucent flag piece. Warna atau special item yang betul akan digunakan secara automatik.'
+      : '<strong>Building Template:</strong> klik ghost block. Game akan guna jenis blok yang betul secara automatik.';
+
+    ui.buildFeedback.textContent=category==='flag'
+      ? `🏳️ Flag blueprint aktif: ${flagTemplates[state.flagLevel].name}`
+      : `🏠 Building blueprint aktif: ${levels[state.level].name}`;
+
+    if(shouldSave) autoSave();
+  }
+
+  function setBuildMode(mode,shouldSave=true){
+    state.buildMode=mode;
+    state.selectedBuiltKey=null;
+    state.selectedBuiltScope=null;
+
+    $('#templateMode').classList.toggle('active',mode==='template');
+    $('#freeMode').classList.toggle('active',mode==='free');
+
+    ghostGroup.visible=mode==='template';
+    templateGroup.visible=mode==='template';
+    freeGroup.visible=mode==='free';
+
+    ui.modeNote.innerHTML=
+      mode==='template'
+        ? (state.templateCategory==='flag'
+            ? '<strong>Flag Template:</strong> klik translucent flag piece. Game akan guna warna atau special item yang betul.'
+            : '<strong>Building Template:</strong> klik ghost block. Game akan guna jenis blok yang betul secara automatik.')
+        : '<strong>Free Build:</strong> pilih blok atau warna dalam inventory, kemudian klik tanah atau sisi blok untuk bina bebas.';
+
+    ui.buildFeedback.textContent=
+      mode==='template'
+        ? (state.templateCategory==='flag'
+            ? `🏳️ Flag blueprint aktif: ${flagTemplates[state.flagLevel].name}`
+            : '👻 Building blueprint aktif. Klik ghost untuk membina.')
+        : '✨ Free Build aktif. Pilih material inventory dahulu.';
+
+    updateUI();
+
+    if(mode==='template') frameCurrentTemplate();
+
+    if(shouldSave) autoSave();
+  }
+
+  function setTab(tab,shouldSave=true){
+    state.tab=tab;
+
+    $('#quizPanel').classList.toggle('hidden',tab!=='quiz');
+    $('#buildPanel').classList.toggle('hidden',tab!=='build');
+
+    $('#quizTab').classList.toggle('active',tab==='quiz');
+    $('#buildTab').classList.toggle('active',tab==='build');
+
+    if(shouldSave) autoSave();
+  }
+
+  $('#quizTab').addEventListener('click',()=>setTab('quiz'));
+  $('#buildTab').addEventListener('click',()=>setTab('build'));
+
+  $('#templateMode').addEventListener('click',()=>setBuildMode('template'));
+  $('#freeMode').addEventListener('click',()=>setBuildMode('free'));
+  $('#buildingTemplateBtn').addEventListener('click',()=>setTemplateCategory('building'));
+  $('#flagTemplateBtn').addEventListener('click',()=>setTemplateCategory('flag'));
+
+  $('#placeToolBtn').addEventListener('click',()=>{
+    state.editTool='place';
+    clearBuiltSelection();
+    ui.buildFeedback.textContent=
+      state.buildMode==='template'
+        ? (state.templateCategory==='flag'
+            ? '🔨 Place Tool aktif. Klik translucent flag piece.'
+            : '🔨 Place Tool aktif. Klik ghost untuk membina.')
+        : '🔨 Place Tool aktif. Klik tanah atau sisi blok untuk membina.';
+    updateUI();
+  });
+
+  $('#removeToolBtn').addEventListener('click',()=>{
+    state.editTool='remove';
+    clearBuiltSelection();
+    ui.buildFeedback.textContent='🎯 Select Tool aktif. Klik blok yang sudah dibina.';
+    updateUI();
+  });
+
+  $('#removeSelectedBtn').addEventListener('click',removeSelectedBlock);
+
+  $$('[data-block]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      state.selectedBlock=btn.dataset.block;
+      updateUI();
+      autoSave();
+    });
+  });
+
+  $$('[data-buy]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const type=btn.dataset.buy;
+      const cost=prices[type];
+
+      if(state.coins<cost){
+        ui.shopFeedback.textContent='🪙 Syiling tidak cukup.';
+        return;
+      }
+
+      state.coins-=cost;
+      state.inventory[type]++;
+
+      ui.shopFeedback.textContent=`✅ Beli 1 blok ${labels[type]}.`;
+
+      updateUI();
+      autoSave();
+    });
+  });
+
+  $('#undoBtn').addEventListener('click',()=>{
+    state.selectedBuiltKey=null;
+    state.selectedBuiltScope=null;
+
+    if(state.buildMode==='template'){
+      if(state.templateCategory==='flag'){
+        const k=state.flagHistory.pop();
+
+        if(!k){
+          ui.buildFeedback.textContent='Tiada flag piece untuk Undo.';
+          return;
+        }
+
+        const data=state.flagPlaced.get(k);
+        state.flagPlaced.delete(k);
+
+        if(data) state.inventory[data.type]++;
+
+        renderTemplate();
+      }else{
+        const k=state.templateHistory.pop();
+
+        if(!k){
+          ui.buildFeedback.textContent='Tiada blok untuk Undo.';
+          return;
+        }
+
+        const data=state.templatePlaced.get(k);
+        state.templatePlaced.delete(k);
+
+        if(data) state.inventory[data.type]++;
+
+        renderTemplate();
+      }
+    }else{
+      const k=state.freeHistory.pop();
+
+      if(!k){
+        ui.buildFeedback.textContent='Tiada blok untuk Undo.';
+        return;
+      }
+
+      const data=state.freePlaced.get(k);
+      state.freePlaced.delete(k);
+
+      if(data) state.inventory[data.type]++;
+
+      renderFree();
+    }
+
+    ui.buildFeedback.textContent='↩ Item dipulangkan ke inventory.';
+    updateUI();
+    autoSave();
+  });
+
+  $('#resetBuildBtn').addEventListener('click',()=>{
+    state.selectedBuiltKey=null;
+    state.selectedBuiltScope=null;
+
+    if(state.buildMode==='template'){
+      if(state.templateCategory==='flag'){
+        for(const data of state.flagPlaced.values()){
+          state.inventory[data.type]++;
+        }
+
+        state.flagPlaced.clear();
+        state.flagHistory=[];
+        renderTemplate();
+      }else{
+        for(const data of state.templatePlaced.values()){
+          state.inventory[data.type]++;
+        }
+
+        state.templatePlaced.clear();
+        state.templateHistory=[];
+        renderTemplate();
+      }
+    }else{
+      for(const data of state.freePlaced.values()){
+        state.inventory[data.type]++;
+      }
+
+      state.freePlaced.clear();
+      state.freeHistory=[];
+      renderFree();
+    }
+
+    ui.buildFeedback.textContent='🧹 Semua item mode ini dipulangkan.';
+    updateUI();
+    autoSave();
+  });
+
+  $('#saveNowBtn').addEventListener('click',()=>{
+    saveGame('Disimpan');
+  });
+
+  $('#resetProgressBtn').addEventListener('click',()=>{
+    const ok=window.confirm(
+      'Padam semua progress BlockCraft Math Quest pada browser ini?'
+    );
+
+    if(ok) clearSavedProgress();
+  });
+
+  window.addEventListener('beforeunload',()=>{
+    try{ saveGame('Auto-saved'); }catch(err){}
+  });
+
+  function resize(){
+    const width=box.clientWidth;
+    const height=box.clientHeight;
+
+    if(!width||!height) return;
+
+    camera.aspect=width/height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width,height,false);
+  }
+
+  new ResizeObserver(resize).observe(box);
+  resize();
+
+  const loaded=loadGame();
+
+  updateUI();
+  renderTemplate();
+  renderFree();
+
+  avatar.position.x=state.avatarPosition.x;
+  avatar.position.z=state.avatarPosition.z;
+
+  if(state.buildMode==='template'){
+    frameCurrentTemplate();
+  }else{
+    controls.target.set(state.avatarPosition.x,1.4,state.avatarPosition.z);
+    camera.position.set(state.avatarPosition.x+9,8,state.avatarPosition.z+11);
+  }
+
+  setTemplateCategory(state.templateCategory,false);
+  setBuildMode(state.buildMode,false);
+  setTab(state.tab,false);
+  updateUI();
+  nextQuestion();
+
+  $('#threeStatus').textContent=
+    loaded
+      ? '✅ Dunia 3D aktif. Math, flags, guided flag learning, avatar dan block editing tersedia.'
+      : '✅ Dunia 3D aktif. Math, flags, guided flag learning, avatar dan semua binaan akan auto-save.';
+
+  function loop(){
+    requestAnimationFrame(loop);
+    controls.update();
+
+    avatar.position.y=.03+Math.sin(performance.now()/300)*.025;
+
+    renderer.render(scene,camera);
+  }
+
+  loop();
+})();
+</script>
+</body>
+</html>
