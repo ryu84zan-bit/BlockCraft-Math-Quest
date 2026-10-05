@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIT261 Topic 1 — 2-Minute Crossword Sprint</title>
+<style>
+:root{
+  --bg:#1d0d2d;
+  --panel:#2a1242;
+  --panel2:#351755;
+  --white:#ffffff;
+  --muted:#d8c9e8;
+  --accent:#caa7ff;
+  --accent2:#9c74d5;
+  --danger:#ff9cac;
+  --success:#b7f5c6;
+  --cell:34px;
+  --gap:3px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:
+radial-gradient(circle at 20% 0%, #3a1760 0, transparent 34%),
+linear-gradient(145deg,#160921,#251038 60%,#1a0b28);
+color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+body{padding:22px}
+.shell{max-width:1180px;margin:0 auto}
+.topbar{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+.kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:800}
+h1{font-size:clamp(28px,4vw,48px);line-height:1.02;margin:6px 0 8px}
+.subtitle{color:var(--muted);max-width:720px;font-size:15px}
+.timerCard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:14px 18px;min-width:220px;text-align:center;box-shadow:0 14px 32px rgba(0,0,0,.18)}
+.timerLabel{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+#timer{font-variant-numeric:tabular-nums;font-size:36px;font-weight:900;letter-spacing:.03em;margin:3px 0}
+.challenge{font-size:12px;color:var(--accent)}
+.controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;margin:16px 0}
+input.name{width:100%;border:1px solid rgba(255,255,255,.18);background:#211033;color:#fff;border-radius:12px;padding:12px 14px;font-size:15px;outline:none}
+input.name:focus{border-color:var(--accent)}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;border:0;border-radius:12px;padding:12px 16px;font-weight:800;font-size:14px;cursor:pointer;transition:.18s transform,.18s opacity,.18s background}
+button:hover{transform:translateY(-1px)}
+.primary{background:#fff;color:#251038}
+.secondary{background:#4b276b;color:#fff;border:1px solid rgba(255,255,255,.14)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.main{display:grid;grid-template-columns:minmax(420px,1.05fr) minmax(320px,.95fr);gap:18px;align-items:start}
+.card{background:rgba(42,18,66,.92);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:18px;box-shadow:0 18px 45px rgba(0,0,0,.2)}
+.card h2{margin:0 0 12px;font-size:18px}
+.instructions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pill{font-size:12px;background:#3d1d5c;border:1px solid rgba(255,255,255,.11);padding:7px 9px;border-radius:999px;color:#eee}
+.gridWrap{overflow:auto;padding:4px}
+#grid{display:grid;grid-template-columns:repeat(12,var(--cell));grid-template-rows:repeat(16,var(--cell));gap:var(--gap);width:max-content;margin:0 auto}
+.square{position:relative;width:var(--cell);height:var(--cell)}
+.block{background:transparent}
+.cell{background:#fff;border-radius:5px;border:2px solid transparent;overflow:hidden}
+.cell input{width:100%;height:100%;border:0;outline:0;text-align:center;text-transform:uppercase;font-size:18px;font-weight:900;color:#29123f;background:#fff;padding:0;caret-color:#29123f}
+.cell.active input{background:#eadcff}
+.clue{cursor:pointer;border-radius:6px;padding:6px;width:100%;text-align:left;background:transparent;font-weight:400}
+.clue.selected{background:#59347a}
+#checkBtn{display:block;margin:12px auto 0}
+.cell:focus-within{border-color:var(--accent)}
+.num{position:absolute;left:3px;top:1px;color:#6a4c7f;font-size:8px;font-weight:800;z-index:2;pointer-events:none}
+.cell.wrong{animation:shake .22s linear 1;border-color:var(--danger);background:#ffe8ed}
+.cell.wrong input{background:#ffe8ed}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.clues{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.clueGroup h3{font-size:14px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin:0 0 10px}
+.clue{display:flex;gap:8px;margin:0 0 10px;color:#f6f1fb;line-height:1.3;font-size:13px}
+.clue b{color:#fff;min-width:20px}
+.note{font-size:12px;color:var(--muted);margin-top:10px}
+#status{min-height:22px;margin-top:10px;font-size:13px;font-weight:700;color:var(--muted);text-align:center}
+.overlay{position:fixed;inset:0;background:rgba(14,5,23,.82);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
+.result{width:min(520px,100%);background:linear-gradient(150deg,#341556,#231037);border:1px solid rgba(255,255,255,.2);border-radius:26px;padding:28px;text-align:center;box-shadow:0 25px 80px rgba(0,0,0,.45)}
+.result .check{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#2b1244;font-size:30px;font-weight:900;margin:0 auto 14px}
+.result h2{font-size:30px;margin:4px 0}
+.result .bigtime{font-variant-numeric:tabular-nums;font-size:54px;font-weight:950;margin:12px 0 2px;letter-spacing:.03em}
+.result .small{color:var(--muted);font-size:13px}
+.result .nameLine{margin-top:13px;font-size:16px;font-weight:800}
+.result .screenshot{margin:18px auto 0;padding:12px;border-radius:14px;border:1px dashed rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.06);font-size:13px}
+.resultBtns{display:flex;gap:10px;justify-content:center;margin-top:16px}
+.footer{margin-top:14px;text-align:center;color:#aa92bd;font-size:11px}
+@media (max-width:860px){
+  .main{grid-template-columns:1fr}
+  .controls{grid-template-columns:1fr 1fr}
+  .controls .name{grid-column:1/-1}
+  :root{--cell:31px}
+}
+@media (max-width:500px){
+  body{padding:12px}
+  .card{padding:12px;border-radius:16px}
+  .clues{grid-template-columns:1fr}
+  :root{--cell:clamp(17px,calc((100vw - 76px)/12),28px);--gap:2px}
+  .cell input{font-size:16px}
+  .result .bigtime{font-size:44px}
+}
+</style>
+</head>
+<body>
+<noscript><p>This game needs JavaScript. Download this HTML file and open it in Chrome, Edge or Safari.</p></noscript>
+<div class="shell">
+  <div class="topbar">
+    <div>
+      <div class="kicker">CIT261 · Topic 1</div>
+      <h1>2-Minute Crossword Sprint</h1>
+      <div class="subtitle">Race to complete 10 key terms from Introduction to Instructional Communication. Fastest <b>correct</b> time wins.</div>
+    </div>
+    <div class="timerCard">
+      <div class="timerLabel">Elapsed Time</div>
+      <div id="timer">00:00.00</div>
+      <div class="challenge" id="challengeText">Target: under 02:00</div>
+    </div>
+  </div>
+
+  <p id="runtimeStatus" role="status" style="color:#ffcad3;font-size:13px">Game is not ready. If this message stays visible, open the game through a hosted web link rather than a file preview.</p>
+  <div class="controls">
+    <input class="name" id="playerName" maxlength="40" placeholder="Name / Team (optional)">
+    <button type="button" class="primary" id="startBtn">START SPRINT</button>
+    <button class="secondary" id="resetBtn">RESET</button>
+  </div>
+
+  <div class="main">
+    <section class="card">
+      <h2>Crossword Grid</h2>
+      <div class="instructions">
+        <span class="pill">10 words</span>
+        <span class="pill">Type one letter per box</span>
+        <span class="pill">Timer starts on START</span>
+        <span class="pill">Finish when all answers are correct</span>
+      </div>
+      <div class="gridWrap"><div id="grid" aria-label="Crossword puzzle"></div></div>
+      <button class="secondary" id="checkBtn" disabled>CHECK ANSWERS</button>
+      <div id="status" role="status" aria-live="polite">Press START SPRINT when everyone is ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Clues</h2>
+      <div class="clues">
+        <div class="clueGroup">
+          <h3>Across</h3>
+          <div id="across"></div>
+        </div>
+        <div class="clueGroup">
+          <h3>Down</h3>
+          <div id="down"></div>
+        </div>
+      </div>
+      <div class="note">Tap a clue to choose a word, then type its answer. Tap a shared box again to switch direction. Use CHECK ANSWERS at any time.</div>
+    </section>
+  </div>
+  <div class="footer">CIT261 · Introduction to Instructional Communication</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="result" id="resultCard">
+    <div class="check">✓</div>
+    <div class="kicker">Challenge Complete</div>
+    <h2>Crossword Sprint</h2>
+    <div class="bigtime" id="finalTime">00:00.00</div>
+    <div class="small">Final correct completion time</div>
+    <div class="nameLine" id="finalName">CIT261 Student</div>
+    <div class="screenshot">📸 Screenshot this card as your proof of completion time.</div>
+    <div class="resultBtns">
+      <button class="primary" onclick="window.print()">PRINT / SAVE</button>
+      <button class="secondary" id="closeResult">BACK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const entries = [{"word": "PERCEPTION", "clue": "How students interpret what they hear or see.", "row": 12, "col": 0, "dir": "across", "num": 9}, {"word": "MOTIVATION", "clue": "What directs and sustains what students do to learn.", "row": 3, "col": 9, "dir": "down", "num": 5}, {"word": "ATTENTION", "clue": "What students choose to focus on.", "row": 4, "col": 2, "dir": "across", "num": 6}, {"word": "FEEDBACK", "clue": "Shows understanding and response in the communication process.", "row": 3, "col": 5, "dir": "down", "num": 4}, {"word": "RECEIVER", "clue": "The person who interprets the meaning.", "row": 6, "col": 1, "dir": "down", "num": 7}, {"word": "BARRIERS", "clue": "Factors that can cause a message to fail.", "row": 8, "col": 7, "dir": "down", "num": 8}, {"word": "MESSAGE", "clue": "The idea or instruction being communicated.", "row": 15, "col": 4, "dir": "across", "num": 10}, {"word": "CONTEXT", "clue": "The setting or situation that shapes meaning.", "row": 1, "col": 3, "dir": "down", "num": 3}, {"word": "EMPATHY", "clue": "Understanding and responding to another person's feelings.", "row": 0, "col": 7, "dir": "down", "num": 2}, {"word": "SENDER", "clue": "The person who creates and delivers the communication.", "row": 0, "col": 6, "dir": "across", "num": 1}];
+const rows = 16, cols = 12;
+const gridEl = document.getElementById('grid');
+const answerMap = new Map();
+const starts = new Map();
+
+function key(r,c){ return `${r},${c}`; }
+
+entries.forEach(e=>{
+  starts.set(key(e.row,e.col), e.num);
+  [...e.word].forEach((ch,i)=>{
+    const r=e.row+(e.dir==='down'?i:0);
+    const c=e.col+(e.dir==='across'?i:0);
+    answerMap.set(key(r,c), ch);
+  });
+});
+
+for(let r=0;r<rows;r++){
+  for(let c=0;c<cols;c++){
+    const sq=document.createElement('div');
+    sq.className='square';
+    if(answerMap.has(key(r,c))){
+      sq.classList.add('cell');
+      if(starts.has(key(r,c))){
+        const n=document.createElement('span');
+        n.className='num'; n.textContent=starts.get(key(r,c));
+        sq.appendChild(n);
+      }
+      const inp=document.createElement('input');
+      inp.maxLength=1;
+      inp.dataset.r=r; inp.dataset.c=c;
+      inp.disabled=true;
+      inp.autocomplete='off';
+      inp.autocapitalize='characters';
+      inp.setAttribute('inputmode','text');
+      inp.addEventListener('focus',()=>{
+        const options=activeEntriesAt(r,c);
+        if(!options.includes(activeEntry)) selectEntry(options[0],false);
+        inp.select();
+      });
+      inp.addEventListener('click',()=>{
+        const options=activeEntriesAt(r,c);
+        if(lastClicked===inp && options.length>1) selectEntry(options.find(x=>x!==activeEntry),false);
+        lastClicked=inp;
+        inp.select();
+      });
+      inp.spellcheck=false;
+      inp.setAttribute('aria-label',`Row ${r+1}, column ${c+1}`);
+      inp.addEventListener('input', onInput);
+      inp.addEventListener('keydown', onKey);
+      sq.appendChild(inp);
+    }else{
+      sq.classList.add('block');
+    }
+    gridEl.appendChild(sq);
+  }
+}
+
+let activeEntry=null, lastClicked=null;
+function renderClues(){
+  const across = entries.filter(e=>e.dir==='across').sort((a,b)=>a.num-b.num);
+  const down = entries.filter(e=>e.dir==='down').sort((a,b)=>a.num-b.num);
+  document.getElementById('across').innerHTML = across.map(e=>`<button type="button" class="clue" data-num="${e.num}"><b>${e.num}</b><span>${e.clue} (${e.word.length} letters)</span></button>`).join('');
+  document.getElementById('down').innerHTML = down.map(e=>`<button type="button" class="clue" data-num="${e.num}"><b>${e.num}</b><span>${e.clue} (${e.word.length} letters)</span></button>`).join('');
+}
+renderClues();
+document.querySelectorAll('.clue').forEach(b=>b.addEventListener('click',()=>{
+  if(!running) { statusEl.textContent='Press START SPRINT first.'; return; }
+  selectEntry(entries.find(e=>e.num===+b.dataset.num),true);
+}));
+function selectEntry(entry,focus){
+  if(!entry) return;
+  activeEntry=entry;
+  document.querySelectorAll('.cell').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.clue').forEach(x=>{
+    const selected=+x.dataset.num===entry.num;
+    x.classList.toggle('selected',selected);
+    x.setAttribute('aria-pressed',String(selected));
+  });
+  for(let i=0;i<entry.word.length;i++){
+    const input=getInput(entry.row+(entry.dir==='down'?i:0),entry.col+(entry.dir==='across'?i:0));
+    input.parentElement.classList.add('active');
+  }
+  if(focus) getInput(entry.row,entry.col).focus();
+}
+
+let running=false, finished=false, startTime=0, interval=null, elapsed=0;
+const timerEl=document.getElementById('timer');
+const statusEl=document.getElementById('status');
+const challengeText=document.getElementById('challengeText');
+
+function fmt(ms){
+  const total=Math.max(0,ms);
+  const m=Math.floor(total/60000);
+  const s=Math.floor((total%60000)/1000);
+  const cs=Math.floor((total%1000)/10);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
+}
+function tick(){
+  if(!running) return;
+  elapsed=Date.now()-startTime;
+  timerEl.textContent=fmt(elapsed);
+  if(elapsed>=120000){
+    challengeText.textContent='Keep going — accuracy still counts!';
+    challengeText.style.color='#ffcad3';
+  }
+}
+function startGame(){
+  if(running || finished) return;
+  document.querySelectorAll('.cell input').forEach(i=>i.disabled=false);
+  running=true;
+  document.getElementById('checkBtn').disabled=false;
+  startTime=Date.now()-elapsed;
+  interval=setInterval(tick,20);
+  document.getElementById('startBtn').disabled=true;
+  statusEl.textContent='GO! Complete all 10 answers as fast as you can.';
+  selectEntry(entries.find(e=>e.num===1),false);
+  const firstEntry=entries.find(e=>e.num===1);
+  try { getInput(firstEntry.row,firstEntry.col).focus(); } catch(error) {}
+}
+function resetGame(){
+  clearInterval(interval);
+  running=false; finished=false; elapsed=0; startTime=0; activeEntry=null; lastClicked=null;
+  document.getElementById('checkBtn').disabled=true;
+  document.querySelectorAll('.active,.selected').forEach(x=>x.classList.remove('active','selected'));
+  timerEl.textContent='00:00.00';
+  challengeText.textContent='Target: under 02:00';
+  challengeText.style.color='';
+  document.getElementById('startBtn').disabled=false;
+  document.querySelectorAll('.cell input').forEach(i=>{
+    i.value=''; i.disabled=true; i.parentElement.classList.remove('wrong');
+  });
+  statusEl.textContent='Press START SPRINT when everyone is ready.';
+  document.getElementById('overlay').style.display='none';
+}
+const startButton=document.getElementById('startBtn');
+startButton.addEventListener('click',startGame);
+startButton.addEventListener('touchend',function(event){
+  event.preventDefault();
+  startGame();
+},{passive:false});
+document.getElementById('checkBtn').addEventListener('click',()=>checkComplete(true));
+document.getElementById('resetBtn').addEventListener('click',resetGame);
+document.getElementById('closeResult').addEventListener('click',()=>document.getElementById('overlay').style.display='none');
+
+function onInput(e){
+  if(!running) return;
+  const inp=e.target;
+  inp.value=inp.value.toUpperCase().replace(/[^A-Z]/g,'').slice(-1);
+  inp.parentElement.classList.remove('wrong');
+  if(inp.value) moveNext(inp);
+  checkComplete();
+}
+
+function activeEntriesAt(r,c){
+  return entries.filter(e=>{
+    if(e.dir==='across') return r===e.row && c>=e.col && c<e.col+e.word.length;
+    return c===e.col && r>=e.row && r<e.row+e.word.length;
+  });
+}
+function getInput(r,c){
+  return document.querySelector(`input[data-r="${r}"][data-c="${c}"]`);
+}
+function moveNext(inp){
+  const r=+inp.dataset.r, c=+inp.dataset.c;
+  const containing=activeEntriesAt(r,c);
+  const preferred=containing.includes(activeEntry)?activeEntry:containing[0];
+  if(!preferred) return;
+  let nr=r+(preferred.dir==='down'?1:0);
+  let nc=c+(preferred.dir==='across'?1:0);
+  const next=getInput(nr,nc);
+  if(next && activeEntriesAt(nr,nc).includes(preferred)) next.focus();
+}
+function onKey(e){
+  if(!running) return;
+  const inp=e.target, r=+inp.dataset.r, c=+inp.dataset.c;
+  if(e.key==='Backspace' && !inp.value){
+    e.preventDefault();
+    const candidates=[activeEntry && getInput(r-(activeEntry.dir==='down'?1:0),c-(activeEntry.dir==='across'?1:0))].filter(x=>x && activeEntriesAt(+x.dataset.r,+x.dataset.c).includes(activeEntry));
+    if(candidates[0]){ candidates[0].focus(); candidates[0].value=''; }
+  }else if(e.key==='ArrowRight'){ e.preventDefault(); const x=getInput(r,c+1); if(x)x.focus(); }
+  else if(e.key==='ArrowLeft'){ e.preventDefault(); const x=getInput(r,c-1); if(x)x.focus(); }
+  else if(e.key==='ArrowDown'){ e.preventDefault(); const x=getInput(r+1,c); if(x)x.focus(); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); const x=getInput(r-1,c); if(x)x.focus(); }
+  else if(e.key==='Enter'){ checkComplete(true); }
+}
+function checkComplete(showErrors=false){
+  const inputs=[...document.querySelectorAll('.cell input')];
+  const allFilled=inputs.every(i=>i.value);
+  if(!allFilled && !showErrors) return;
+  let wrong=0;
+  inputs.forEach(i=>{
+    const expected=answerMap.get(key(+i.dataset.r,+i.dataset.c));
+    const bad=Boolean(i.value) && i.value.toUpperCase()!==expected;
+    i.parentElement.classList.toggle('wrong',bad);
+    if(bad) wrong++;
+  });
+  if(wrong===0 && allFilled) finish();
+  else if(wrong===0) statusEl.textContent='Filled letters are correct so far. Complete the empty boxes.';
+  else statusEl.textContent=`Almost! ${wrong} letter${wrong===1?' is':'s are'} incorrect. Fix the highlighted box${wrong===1?'':'es'}.`;
+}
+function finish(){
+  elapsed=Date.now()-startTime;
+  running=false; finished=true; clearInterval(interval);
+  document.getElementById('checkBtn').disabled=true;
+  timerEl.textContent=fmt(elapsed);
+  document.querySelectorAll('.cell input').forEach(i=>i.disabled=true);
+  statusEl.textContent='Correct! Your time has been frozen.';
+  document.getElementById('finalTime').textContent=fmt(elapsed);
+  const n=document.getElementById('playerName').value.trim();
+  document.getElementById('finalName').textContent=n || 'CIT261 Student';
+  document.getElementById('overlay').style.display='flex';
+}
+document.getElementById('runtimeStatus').textContent='Game ready — tap START SPRINT.';
+document.getElementById('runtimeStatus').style.color='#b7f5c6';
+</script>
+</body>
+</html>
